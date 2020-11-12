@@ -7,6 +7,8 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Link from '@material-ui/core/Link';
 import ApiService from "../services/ApiService";
+import SearchComponent from "./SearchComponent";
+import RefreshComponent from "./RefreshComponent";
 
 
 class AccountComponent extends React.Component {
@@ -76,6 +78,8 @@ class AccountComponent extends React.Component {
                   </Table>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
+                <SearchComponent/>
+                <RefreshComponent account={this.state.account}/>
             </div>
         )
     }
