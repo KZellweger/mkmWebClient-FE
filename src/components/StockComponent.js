@@ -129,6 +129,18 @@ const columns = [
         }
     },
     {
+        title: "Preisdifferenz",
+        field: "articlePriceEntity.priceDifference",
+        editable: "never",
+        type: "currency",
+        currencySetting: {
+            locale: "de",
+            currencyCode: "Eur",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        }
+    },
+    {
         title: "Kommentar",
         field: "comment",
         editable: true,

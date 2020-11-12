@@ -15,10 +15,10 @@ const PRICE = RELOAD + '/prices/'
 const PRODUCTS = RELOAD + '/products/file'
 const STOCK = RELOAD + '/stock'
 
-function axiosApiCallWithErrorHandling(apiCallFunction) {
+const axiosApiCallWithErrorHandling = async (apiCallFunction) => {
     let apiResponse;
     try {
-        return axios.get(apiCallFunction);
+        await axios.get(apiCallFunction);
     } catch (err) {
         apiResponse = err.response;
     } finally {
@@ -29,20 +29,20 @@ function axiosApiCallWithErrorHandling(apiCallFunction) {
 class ApiService {
 
     reloadExpansions(){
-        axiosApiCallWithErrorHandling(HOST + EXPANSIONS).then(r => true)
+        axiosApiCallWithErrorHandling(HOST + EXPANSIONS)
     }
 
 
     reloadProducts() {
-        axiosApiCallWithErrorHandling(HOST + PRODUCTS).then(r => true)
+        axiosApiCallWithErrorHandling(HOST + PRODUCTS)
     }
 
     reloadStock() {
-        axiosApiCallWithErrorHandling(HOST + STOCK).then(r => true)
+        axiosApiCallWithErrorHandling(HOST + STOCK)
     }
 
     reloadPrice(name) {
-        axiosApiCallWithErrorHandling(HOST + PRICE + name).then(r => true)
+        axiosApiCallWithErrorHandling(HOST + PRICE + name)
     }
 
 
