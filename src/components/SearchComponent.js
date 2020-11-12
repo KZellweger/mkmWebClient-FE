@@ -8,7 +8,6 @@ import StockComponent from "./StockComponent";
 import Cookies from 'universal-cookie';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import RefreshComponent from "./RefreshComponent";
 import Button from "@material-ui/core/Button";
 
 
@@ -21,7 +20,7 @@ export default function SearchComponent(props) {
     useEffect(() => {
         StockService.getStockExpansionNames().then((res) =>
             setExpansions(res.data));
-        setSelectedExpansion(cookies.get('expansion'));
+        setSelectedExpansion(new Cookies().get('expansion'));
     }, [])
 
     const handleChange = (event) => {
@@ -99,8 +98,5 @@ const useStyles = makeStyles((theme) => ({
     formControl: {
         width: '100%'
     },
-    inputLabel: {
-        width: '100%',
-        padding: 5,
-    },
+
 }));

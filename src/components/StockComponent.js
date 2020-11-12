@@ -26,7 +26,7 @@ import {
 } from '@material-ui/icons';
 import SaveTwoToneIcon from '@material-ui/icons/SaveTwoTone';
 
-const cookies = new Cookies();
+const expansion = new Cookies().get('expansion');
 
 //https://github.com/effiongcharles/material-ui-table-crud-restapi
 //https://material-table.com/
@@ -41,7 +41,6 @@ class StockComponent extends React.Component {
     }
 
     componentDidMount() {
-        var expansion = cookies.get('expansion');
         if (expansion && expansion !== 'all') {
             ApiService.getStockByExpansionName(expansion).then((response) => {
                 this.setState({stock: response.data})
@@ -56,7 +55,7 @@ class StockComponent extends React.Component {
     render() {
         return (<div>
                 <MaterialTable
-                    title={title + cookies.get('expansion')}
+                    title={title + expansion}
                     columns={columns}
                     data={this.state.stock}
                     localization={localization}
@@ -193,7 +192,6 @@ const columns = [
                         href={`https://sandbox.cardmarket.com${rowData.product.imageUrl.substring(
                             1
                         )}`}
-                        activeClassName="current"
                     >
                         {rowData.product.imageUrl}
                     </Link>

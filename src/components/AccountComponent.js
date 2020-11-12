@@ -1,14 +1,14 @@
 import React from 'react';
 import Table from 'react-bootstrap/Table'
 
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Link from '@material-ui/core/Link';
 import ApiService from "../services/ApiService";
 import SearchComponent from "./SearchComponent";
 import RefreshComponent from "./RefreshComponent";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
 
 
 class AccountComponent extends React.Component {
@@ -38,12 +38,12 @@ class AccountComponent extends React.Component {
 
         return (
             <div>
-                <h3>Mein Bestand auf <Link href={`https://sandbox.cardmarket.com/en/Magic/Users/${this.state.account.userName}`} activeClassName="current">cardmarket.com</Link></h3>
-                <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                          <td colSpan="2"><h3>Mein Account</h3></td>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                <h3>Mein Bestand auf <Link href={`https://sandbox.cardmarket.com/en/Magic/Users/${this.state.account.userName}`}>cardmarket.com</Link></h3>
+                <Accordion expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <h3>Mein Account</h3>
+                </AccordionSummary>
+                <AccordionDetails>
                    <Table striped bordered hover variant="dark">
                       <tbody className="text-center">
                              <tr>
@@ -76,8 +76,8 @@ class AccountComponent extends React.Component {
                              </tr>
                        </tbody>
                   </Table>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
+                </AccordionDetails>
+              </Accordion>
                 <SearchComponent/>
                 <RefreshComponent account={this.state.account}/>
             </div>

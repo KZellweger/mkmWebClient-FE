@@ -10,50 +10,60 @@ const CHANGE_ARTICLE_REST_API_URL = '/stock/articles'
 const ACCOUNT = '/account/'
 
 const RELOAD = '/reload'
-const EXPANSIONS = RELOAD+'/expansions'
-const PRICE = RELOAD+'/prices/'
-const PRODUCTS = RELOAD+'/products/file'
-const STOCK = RELOAD+'/stock'
+const EXPANSIONS = RELOAD + '/expansions'
+const PRICE = RELOAD + '/prices/'
+const PRODUCTS = RELOAD + '/products/file'
+const STOCK = RELOAD + '/stock'
 
+function axiosApiCallWithErrorHandling(apiCallFunction) {
+    let apiResponse;
+    try {
+        return axios.get(apiCallFunction);
+    } catch (err) {
+        apiResponse = err.response;
+    } finally {
+        console.log(apiResponse); // Could be success or error
+    }
+}
 
 class ApiService {
 
     reloadExpansions(){
-        axios.get(HOST+EXPANSIONS).then(r  => true)
-    }
-
-    reloadProducts(){
-        axios.get(HOST+PRODUCTS).then(r  => true)
-    }
-
-    reloadStock(){
-        axios.get(HOST+STOCK).then(r  => true)
-    }
-
-    reloadPrice(name){
-        axios.get(HOST+PRICE + name).then(r  => true)
+        axiosApiCallWithErrorHandling(HOST + EXPANSIONS).then(r => true)
     }
 
 
-
-    getStockExpansionNames(){
-        return axios.get(HOST+EXPANSION_NAMES);
+    reloadProducts() {
+        axiosApiCallWithErrorHandling(HOST + PRODUCTS).then(r => true)
     }
 
-    getStockByExpansionName(expansionName){
-        return axios.get(HOST+STOCK_BY_EXPANSION_NAME + expansionName);
+    reloadStock() {
+        axiosApiCallWithErrorHandling(HOST + STOCK).then(r => true)
     }
 
-    getStockInformation(){
-        return axios.get(HOST+STOCK_REST_API_URL);
+    reloadPrice(name) {
+        axiosApiCallWithErrorHandling(HOST + PRICE + name).then(r => true)
     }
 
-    postArticles(articles){
-        return axios.post(HOST+CHANGE_ARTICLE_REST_API_URL, articles);
+
+    getStockExpansionNames() {
+        return axios.get(HOST + EXPANSION_NAMES);
     }
 
-    getAccountInformation(){
-        return axios.get(HOST+ACCOUNT);
+    getStockByExpansionName(expansionName) {
+        return axios.get(HOST + STOCK_BY_EXPANSION_NAME + expansionName);
+    }
+
+    getStockInformation() {
+        return axios.get(HOST + STOCK_REST_API_URL);
+    }
+
+    postArticles(articles) {
+        return axios.post(HOST + CHANGE_ARTICLE_REST_API_URL, articles);
+    }
+
+    getAccountInformation() {
+        return axios.get(HOST + ACCOUNT);
     }
 
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from "@material-ui/core/Button";
@@ -64,9 +64,6 @@ const useStyles = makeStyles((theme) => ({
     formControl: {
         width: '100%'
     },
-    inputLabel: {
-        width: '100%'
-    }
 }));
 
 
