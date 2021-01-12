@@ -73,13 +73,8 @@ export default function UploadComponent() {
         const formData = new FormData()
         formData.append('file', file)
         axios.post(UPLOAD_CSV_URL, formData, {
-            onUploadProgress: (ProgressEvent) => {
-                let progress = Math.round(
-                    ProgressEvent.loaded / ProgressEvent.total * 100);
-                setProgress(progress);
-            }
         }).then(res => {
-            setCardList(res.data);
+            //setCardList(res.data);
             console.log(res.data)
             console.log(cardList)
         }).catch(err => console.log(err))
@@ -141,12 +136,13 @@ export default function UploadComponent() {
     const open = Boolean(anchorEl);
 
     const columns = [
-        {title: "Bild", field: "imageurl", render: rowData => {return <img src={rowData.imageUrl.replace(".",IMAGE_PREFIX)} onMouseEnter={ event => { handlePopoverOpen(event,rowData.imageUrl)}} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}} />}},
+        {title: "Bild", field: "imageurl", render: rowData => {return <img src={ rowData.imageUrl.replace(".",IMAGE_PREFIX)} onMouseEnter={ event => { handlePopoverOpen(event,rowData.imageUrl)}} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}} />}},
         {title: "EN-Name", field: "name", render: rowData => {return <p>{rowData.name}</p>}},
         {title: "Set Title", field: "expansionName", render: rowData => {return <p>{rowData.expansionName}</p>}},
         {title: "Sprache", field: "language", render: rowData => {return <p>{rowData.language}</p>}},
         {title: "Name", field: "productName", render: rowData => {return <p>{rowData.productName}</p>}},
         {title: "Rarity", field: "rarity", render: rowData => {return <p>{rowData.rarity}</p>}},
+        {title: "Condition", field: "condition", render: rowData => {return <p>{rowData.condition}</p>}},
         {title: "Anzahl", field: "quantity", render: rowData => {return <p>{rowData.quantity}</p>}},
         {title: "Preis", field: "price", render: rowData => {return <p>{rowData.price}</p>}},
         {title: "Hinzugefügt", field: "dateAdded", render: rowData => {return <p>{rowData.dateAdded}</p>}}

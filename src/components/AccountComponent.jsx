@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table'
 import {useHistory} from "react-router-dom";
 import axios from "axios";
 import {Button, Col, Container, Row} from "react-bootstrap";
+import LoadingSpinner from "../utils/LoadingSpinner";
 
 const ACCOUNT_REST_API_URL = 'http://localhost:8081/account/'
 const PRODUCTDATABASE = 'http://localhost:8081/product'
@@ -18,6 +19,7 @@ export default function AccountComponent() {
         totalBalance: 0
     })
 
+    const [loading, setLoading] = useState(false)
     const history = useHistory()
 
     const handleLogin = () => {
@@ -30,9 +32,11 @@ export default function AccountComponent() {
             .catch(error => alert(error.message))
     }
     const readMkmDB = () => {
-        axios.get(PRODUCTDATABASE + "/import")
-            .then(res => console.log(res.status))
-            .catch(error => alert(error.message))
+            setLoading(true)
+            axios.get(PRODUCTDATABASE + "/import")
+                .then(res => setLoading(false))
+                .catch(error => setLoading(false))
+
     }
     const mergeMkmDB = () => {
         axios.get(PRODUCTDATABASE + "/update")
@@ -75,6 +79,7 @@ export default function AccountComponent() {
                 </Row>
             </Container>
             <hr/>
+            {loading ? <LoadingSpinner /> :
             <Table striped bordered hover variant="dark">
                 <tbody className="text-center">
                 <tr>
@@ -107,6 +112,7 @@ export default function AccountComponent() {
                 </tr>
                 </tbody>
             </Table>
+            }
         </div>
     )
 
