@@ -17,8 +17,9 @@ import {
     Search,
     ViewColumn
 } from "@material-ui/icons";
-import Link from "@material-ui/core/Link";
 import MaterialTable from "material-table";
+import { makeStyles } from '@material-ui/core/styles';
+import {Popover} from "@material-ui/core";
 
 const ACCOUNT_REST_API_URL = 'http://localhost:8081/upload/'
 const IMAGE_PREFIX = 'https://api.cardmarket.com'
@@ -59,7 +60,8 @@ export default function UploadComponent() {
     const [cardList, setCardList] = useState([])
     const [file, setFile] = useState('')
     const [progress, setProgress] = useState(0)
-
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [popImg, setPopImg] = useState('')
     const handleFileChange = (event) => {
         setProgress(0)
         const file = event.target.files[0]
@@ -107,15 +109,36 @@ export default function UploadComponent() {
         }
     ];
 
+    const useStyles = makeStyles((theme) => ({
+        popover: {
+            pointerEvents: 'none',
+        },
+        paper: {
+            padding: theme.spacing(1),
+        },
+    }));
+
+    const classes = useStyles();
+
+    const handlePopoverOpen = (event, url) => {
+        setAnchorEl(event.currentTarget);
+        setPopImg(url.replace(".",IMAGE_PREFIX))
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
 
     const columns = [
+        {title: "Bild", field: "imageurl", render: rowData => {return <img src={rowData.imageUrl.replace(".",IMAGE_PREFIX)} onMouseEnter={ event => { handlePopoverOpen(event,rowData.imageUrl)}} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}} />}},
         {title: "EN-Name", field: "name", render: rowData => {return <p>{rowData.name}</p>}},
+        {title: "Set Title", field: "expansionName", render: rowData => {return <p>{rowData.expansionName}</p>}},
         {title: "Sprache", field: "language", render: rowData => {return <p>{rowData.language}</p>}},
         {title: "Name", field: "productName", render: rowData => {return <p>{rowData.productName}</p>}},
         {title: "Kategorie", field: "categoryName", render: rowData => {return <p>{rowData.categoryName}</p>}},
-        {title: "Bild", field: "imageurl", render: rowData => {return <img src={rowData.imageUrl.replace(".",IMAGE_PREFIX)} style={{width: 50, borderRadius: '10%'}} />}},
         {title: "Rarity", field: "rarity", render: rowData => {return <p>{rowData.rarity}</p>}},
-        {title: "Set Title", field: "expansionName", render: rowData => {return <p>{rowData.expansionName}</p>}},
         {title: "Hinzugefügt", field: "dateAdded", render: rowData => {return <p>{rowData.dateAdded}</p>}}
         ]
 
@@ -160,6 +183,27 @@ export default function UploadComponent() {
                 actions={actions}
                 title="Exhibition Items"
             />
+            <Popover
+                id="mouse-over-popover"
+                className={classes.popover}
+                classes={{
+                    paper: classes.paper,
+                }}
+                open={open}
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                onClose={handlePopoverClose}
+                disableRestoreFocus
+            >
+                <img src={popImg}/>
+            </Popover>
         </div>
 
     );
