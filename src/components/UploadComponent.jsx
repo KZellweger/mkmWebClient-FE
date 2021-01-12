@@ -20,51 +20,86 @@ import {
 import MaterialTable from "material-table";
 import { makeStyles } from '@material-ui/core/styles';
 import {Button, FormControl, FormGroup, FormHelperText, FormLabel, Grid, Input, Popover} from "@material-ui/core";
+import LoadingSpinner from "../utils/LoadingSpinner";
 
 const UPLOAD_CSV_URL = 'http://localhost:8081/upload/'
 const POST_CARDS_URL = 'http://localhost:8081/upload/'
 const IMAGE_PREFIX = 'https://api.cardmarket.com'
 
 export default function UploadComponent() {
-    const [card, setCard] = useState({
-        //ArticleProps
+    const [card, setCard] = useState(  {
         articleId: 0,
-        languageCode: '',
-        comment: '',
-        price: 0,
+        languageCode: "en",
+        comment: "",
+        price: 0.00,
         quantity: 0,
         inShoppingCart: false,
-        seller: '',
-        lastEdited: '',
-        condition: '',
+        product: {
+            productId: 0,
+            name: "",
+            categoryId: null,
+            categoryName: "",
+            expansionId: null,
+            dateAdded: null,
+            metaproductId: 8090,
+            totalReprints: 0,
+            localizations: [
+                {
+                    language: 'it',
+                    productName: ""
+                },
+                {
+                    language: "de",
+                    productName: ""
+                },
+                {
+                    language: 'en',
+                    productName: ""
+                },
+                {
+                    language: "fr",
+                    productName: ""
+                },
+                {
+                    language: "es",
+                    productName: ""
+                }
+            ],
+            selfUrl: "",
+            imageUrl: "",
+            game: "",
+            expansionCollectionNumber: "",
+            rarity: "",
+            expansionName: "",
+            expansion: {
+                id: 0,
+                version: 0,
+                localizations: [],
+                expansionId: 0,
+                name: "",
+                code: "",
+                iconCode: 53,
+                releaseDate: [],
+                game: "MTG"
+            },
+            priceGuide: null
+        },
+        seller: null,
+        lastEdited: [],
+        condition: "",
         foil: false,
         signed: false,
         altered: false,
         playset: false,
-        //ProductProps
-        productId: 0,
-        metaproductId: 0,
-        totalReprints: 0,
-        name: '',
-        language: '',
-        productName: '',
-        categoryId: 0,
-        categoryName: '',
-        slefUrl: '',
-        imageUrl: '',
-        game: '',
-        expansionCollectionNumber: '',
-        rarity: '',
-        expansionName: '',
-        dateAdded: '',
-    })
+        firstEdition: false,
+        articlePriceEntity: null
+    },)
     const [cardList, setCardList] = useState([])
     const [file, setFile] = useState('')
-    const [progress, setProgress] = useState(0)
+    const [loading, setLoading] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null);
     const [popImg, setPopImg] = useState('')
     const handleFileChange = (event) => {
-        setProgress(0)
         const file = event.target.files[0]
         setFile(file)
     }
@@ -72,12 +107,15 @@ export default function UploadComponent() {
     const uploadFile = () => {
         const formData = new FormData()
         formData.append('file', file)
+        setLoading(true)
         axios.post(UPLOAD_CSV_URL, formData, {
         }).then(res => {
-            //setCardList(res.data);
-            console.log(res.data)
-            console.log(cardList)
-        }).catch(err => console.log(err))
+            setLoading(false)
+            setCardList(res.data);
+        }).catch(err => {
+            setLoading(false)
+            console.log(err)
+        })
     }
 
     const handleEdit = () => {
@@ -136,16 +174,16 @@ export default function UploadComponent() {
     const open = Boolean(anchorEl);
 
     const columns = [
-        {title: "Bild", field: "imageurl", render: rowData => {return <img src={ rowData.imageUrl.replace(".",IMAGE_PREFIX)} onMouseEnter={ event => { handlePopoverOpen(event,rowData.imageUrl)}} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}} />}},
-        {title: "EN-Name", field: "name", render: rowData => {return <p>{rowData.name}</p>}},
-        {title: "Set Title", field: "expansionName", render: rowData => {return <p>{rowData.expansionName}</p>}},
-        {title: "Sprache", field: "language", render: rowData => {return <p>{rowData.language}</p>}},
+        {title: "Bild", field: "imageurl", render: rowData => {return <img src={ rowData.product.imageUrl.replace(".",IMAGE_PREFIX)} onMouseEnter={ event => { handlePopoverOpen(event,rowData.product.imageUrl)}} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}} />}},
+        {title: "EN-Name", field: "name", render: rowData => {return <p>{rowData.product.name}</p>}},
+        {title: "Set Title", field: "expansionName", render: rowData => {return <p>{rowData.product != null ? rowData.product.expansionName : "unknown"}</p>}},
+        {title: "Sprache", field: "language", render: rowData => {return <p>{rowData.languageCode}</p>}},
         {title: "Name", field: "productName", render: rowData => {return <p>{rowData.productName}</p>}},
-        {title: "Rarity", field: "rarity", render: rowData => {return <p>{rowData.rarity}</p>}},
+        {title: "Rarity", field: "rarity", render: rowData => {return <p>{rowData.product != null ? rowData.product.rarity : ""}</p>}},
         {title: "Condition", field: "condition", render: rowData => {return <p>{rowData.condition}</p>}},
         {title: "Anzahl", field: "quantity", render: rowData => {return <p>{rowData.quantity}</p>}},
         {title: "Preis", field: "price", render: rowData => {return <p>{rowData.price}</p>}},
-        {title: "Hinzugefügt", field: "dateAdded", render: rowData => {return <p>{rowData.dateAdded}</p>}}
+        {title: "Hinzugefügt", field: "dateAdded", render: rowData => {return <p>{rowData.lastEdited}</p>}}
         ]
 
     const icons = {
@@ -194,14 +232,16 @@ export default function UploadComponent() {
                 </Grid>
             </Grid>
             <hr/>
-            <MaterialTable
-                options={options}
-                columns={columns}
-                data={cardList}
-                icons={icons}
-                actions={actions}
-                title="Sorter Results"
-            />
+            {loading ? <LoadingSpinner/> :
+                <MaterialTable
+                    options={options}
+                    columns={columns}
+                    data={cardList}
+                    icons={icons}
+                    actions={actions}
+                    title="Sorter Results"
+                />
+            }
             <Popover
                 id="mouse-over-popover"
                 className={classes.popover}
