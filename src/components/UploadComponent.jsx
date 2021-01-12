@@ -19,9 +19,10 @@ import {
 } from "@material-ui/icons";
 import MaterialTable from "material-table";
 import { makeStyles } from '@material-ui/core/styles';
-import {Popover} from "@material-ui/core";
+import {Button, FormControl, FormGroup, FormHelperText, FormLabel, Grid, Input, Popover} from "@material-ui/core";
 
-const ACCOUNT_REST_API_URL = 'http://localhost:8081/upload/'
+const UPLOAD_CSV_URL = 'http://localhost:8081/upload/'
+const POST_CARDS_URL = 'http://localhost:8081/upload/'
 const IMAGE_PREFIX = 'https://api.cardmarket.com'
 
 export default function UploadComponent() {
@@ -71,7 +72,7 @@ export default function UploadComponent() {
     const uploadFile = () => {
         const formData = new FormData()
         formData.append('file', file)
-        axios.post(ACCOUNT_REST_API_URL, formData, {
+        axios.post(UPLOAD_CSV_URL, formData, {
             onUploadProgress: (ProgressEvent) => {
                 let progress = Math.round(
                     ProgressEvent.loaded / ProgressEvent.total * 100);
@@ -88,6 +89,10 @@ export default function UploadComponent() {
         //todo
     }
     const handleDelete = () => {
+        //todo
+    }
+
+    const handlePost = () => {
         //todo
     }
 
@@ -115,7 +120,7 @@ export default function UploadComponent() {
         },
         paper: {
             padding: theme.spacing(1),
-        },
+        }
     }));
 
     const classes = useStyles();
@@ -129,6 +134,10 @@ export default function UploadComponent() {
         setAnchorEl(null);
     };
 
+    const newCardForm = () => {
+        alert("Create Card Component")
+    }
+
     const open = Boolean(anchorEl);
 
     const columns = [
@@ -137,8 +146,9 @@ export default function UploadComponent() {
         {title: "Set Title", field: "expansionName", render: rowData => {return <p>{rowData.expansionName}</p>}},
         {title: "Sprache", field: "language", render: rowData => {return <p>{rowData.language}</p>}},
         {title: "Name", field: "productName", render: rowData => {return <p>{rowData.productName}</p>}},
-        {title: "Kategorie", field: "categoryName", render: rowData => {return <p>{rowData.categoryName}</p>}},
         {title: "Rarity", field: "rarity", render: rowData => {return <p>{rowData.rarity}</p>}},
+        {title: "Anzahl", field: "quantity", render: rowData => {return <p>{rowData.quantity}</p>}},
+        {title: "Preis", field: "price", render: rowData => {return <p>{rowData.price}</p>}},
         {title: "Hinzugefügt", field: "dateAdded", render: rowData => {return <p>{rowData.dateAdded}</p>}}
         ]
 
@@ -165,23 +175,36 @@ export default function UploadComponent() {
 
     return (
         <div>
-            <div className="file-upload">
-                <input type="file" onChange={handleFileChange}/>
-                <div className="bg-info" style={{width: progress}}>
-                    {progress}
-                </div>
-                <button onClick={uploadFile} className="bg-primary">
-                    Upload
-                </button>
-                <hr/>
-            </div>
+            <Grid container>
+                <Grid item container xs={6} spacing={1}>
+                    <Grid item xs={6}>
+                        <FormControl>
+                            <FormLabel>Magic Sorter File Upload</FormLabel>
+                            <Input id="file-upload" type='file' onChange={handleFileChange}/>
+                            <FormHelperText>Upload the CSV file from the Magic Sorter</FormHelperText>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button id='manualEntry' onClick={newCardForm} color='primary' variant='contained'>Manual Entry</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl>
+                            <Button id='submit' onClick={uploadFile} color='primary' variant='contained'>Upload CSV</Button>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button id='postCards' color='primary' variant='contained' onClick={handlePost}>Upload Table to MKM</Button>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <hr/>
             <MaterialTable
                 options={options}
                 columns={columns}
                 data={cardList}
                 icons={icons}
                 actions={actions}
-                title="Exhibition Items"
+                title="Sorter Results"
             />
             <Popover
                 id="mouse-over-popover"
