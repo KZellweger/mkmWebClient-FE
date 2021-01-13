@@ -19,7 +19,17 @@ import {
 } from "@material-ui/icons";
 import MaterialTable from "material-table";
 import { makeStyles } from '@material-ui/core/styles';
-import {Button, FormControl, FormGroup, FormHelperText, FormLabel, Grid, Input, Popover} from "@material-ui/core";
+import {
+    Button,
+    FormControl,
+    FormGroup,
+    FormHelperText,
+    FormLabel,
+    Grid,
+    Input,
+    Popover,
+    Select
+} from "@material-ui/core";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
 const UPLOAD_CSV_URL = 'http://localhost:8081/upload/'
@@ -43,28 +53,7 @@ export default function UploadComponent() {
             dateAdded: null,
             metaproductId: 8090,
             totalReprints: 0,
-            localizations: [
-                {
-                    language: 'it',
-                    productName: ""
-                },
-                {
-                    language: "de",
-                    productName: ""
-                },
-                {
-                    language: 'en',
-                    productName: ""
-                },
-                {
-                    language: "fr",
-                    productName: ""
-                },
-                {
-                    language: "es",
-                    productName: ""
-                }
-            ],
+            localizations: [],
             selfUrl: "",
             imageUrl: "",
             game: "",
@@ -111,6 +100,7 @@ export default function UploadComponent() {
         axios.post(UPLOAD_CSV_URL, formData, {
         }).then(res => {
             setLoading(false)
+            console.log(res.data)
             setCardList(res.data);
         }).catch(err => {
             setLoading(false)
@@ -177,7 +167,7 @@ export default function UploadComponent() {
         {title: "Bild", field: "imageurl", render: rowData => {return <img src={ rowData.product.imageUrl.replace(".",IMAGE_PREFIX)} onMouseEnter={ event => { handlePopoverOpen(event,rowData.product.imageUrl)}} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}} />}},
         {title: "EN-Name", field: "name", render: rowData => {return <p>{rowData.product.name}</p>}},
         {title: "Set Title", field: "expansionName", render: rowData => {return <p>{rowData.product != null ? rowData.product.expansionName : "unknown"}</p>}},
-        {title: "Sprache", field: "language", render: rowData => {return <p>{rowData.languageCode}</p>}},
+        {title: "Sprache", field: "language", render: rowData => {return <Select>{rowData.product.localizations !== null ?  rowData.product.localizations.map(locale => locale['language']) : "unknown"}</Select>}},
         {title: "Name", field: "productName", render: rowData => {return <p>{rowData.productName}</p>}},
         {title: "Rarity", field: "rarity", render: rowData => {return <p>{rowData.product != null ? rowData.product.rarity : ""}</p>}},
         {title: "Condition", field: "condition", render: rowData => {return <p>{rowData.condition}</p>}},
