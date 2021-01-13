@@ -26,7 +26,7 @@ import {
     FormHelperText,
     FormLabel,
     Grid,
-    Input,
+    Input, MenuItem,
     Popover,
     Select
 } from "@material-ui/core";
@@ -167,8 +167,7 @@ export default function UploadComponent() {
         {title: "Bild", field: "imageurl", render: rowData => {return <img src={ rowData.product.imageUrl.replace(".",IMAGE_PREFIX)} onMouseEnter={ event => { handlePopoverOpen(event,rowData.product.imageUrl)}} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}} />}},
         {title: "EN-Name", field: "name", render: rowData => {return <p>{rowData.product.name}</p>}},
         {title: "Set Title", field: "expansionName", render: rowData => {return <p>{rowData.product != null ? rowData.product.expansionName : "unknown"}</p>}},
-        {title: "Sprache", field: "language", render: rowData => {return <Select>{rowData.product.localizations !== null ?  rowData.product.localizations.map(locale => locale['language']) : "unknown"}</Select>}},
-        {title: "Name", field: "productName", render: rowData => {return <p>{rowData.productName}</p>}},
+        {title: "Sprache", field: "language", render: rowData => {return <Select value='en'>{rowData.product.localizations !== null ?  rowData.product.localizations.map(locale => <MenuItem value={locale['language']}>{locale['productName']}</MenuItem>) : <MenuItem value="en">"Unknown"</MenuItem>}</Select>}},
         {title: "Rarity", field: "rarity", render: rowData => {return <p>{rowData.product != null ? rowData.product.rarity : ""}</p>}},
         {title: "Condition", field: "condition", render: rowData => {return <p>{rowData.condition}</p>}},
         {title: "Anzahl", field: "quantity", render: rowData => {return <p>{rowData.quantity}</p>}},
