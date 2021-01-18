@@ -2,17 +2,10 @@ import React from 'react';
 import Navbar from "react-bootstrap/Navbar";
 import NavbarBrand from "react-bootstrap/NavbarBrand";
 import logo from '../assets/Test.png';
-class NavigationBar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            account: {}
-        }
-    }
-
-    render() {
+import {Nav} from "react-bootstrap";
+export default function NavigationBar(){
         return (
-            <Navbar bg="dark" sticky={"top"}>
+            <Navbar bg="dark" variant="dark" sticky={"top"}>
                 <NavbarBrand href="#home">
                     <img
                         src={logo}
@@ -22,10 +15,12 @@ class NavigationBar extends React.Component {
                         alt="Test Logo"
                     />
                 </NavbarBrand>
+                <Nav className="mr-auto">
+                    <Nav.Link href="/stock">My Stock</Nav.Link>
+                    <Nav.Link href="/upload">Upload from CSV</Nav.Link>
+                    <Nav.Link href="/statistics">Statistics</Nav.Link>
+                    <Nav.Link href="/account">Account Overview</Nav.Link>
+                </Nav>
             </Navbar>
         )
-
-    }
 }
-
-export default NavigationBar
