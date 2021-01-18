@@ -32,8 +32,9 @@ import {
 } from "@material-ui/core";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
-const UPLOAD_CSV_URL = 'http://localhost:8081/upload/'
-const POST_CARDS_URL = 'http://localhost:8081/upload/'
+const UPLOAD_CONTROLLER_URL = 'http://localhost:8081/upload'
+const UPLOAD_CSV_ENDPOINT = '/csv'
+const POST_CARDS_ENDPOINT = '/tomkm'
 const IMAGE_PREFIX = 'https://api.cardmarket.com'
 
 export default function UploadComponent() {
@@ -97,7 +98,7 @@ export default function UploadComponent() {
         const formData = new FormData()
         formData.append('file', file)
         setLoading(true)
-        axios.post(UPLOAD_CSV_URL, formData, {
+        axios.post(UPLOAD_CONTROLLER_URL + UPLOAD_CSV_ENDPOINT, formData, {
         }).then(res => {
             setLoading(false)
             console.log(res.data)
@@ -116,7 +117,15 @@ export default function UploadComponent() {
     }
 
     const handlePost = () => {
-        //todo
+        setLoading(true)
+        axios.post(UPLOAD_CONTROLLER_URL + POST_CARDS_ENDPOINT,cardList, {
+        }).then(res => {
+            setLoading(false)
+            console.log(res.data)
+        }).catch(err => {
+            setLoading(false)
+            console.log(err)
+        })
     }
 
     // Table options
