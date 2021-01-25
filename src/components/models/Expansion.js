@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 
-const ExpansionRecord = Immutable.Record({
+const ExpansionRecord = new Immutable.Record({
     id: 0,
     version: 0,
     localizations: [],
@@ -13,6 +13,10 @@ const ExpansionRecord = Immutable.Record({
 })
 
 class Expansion extends ExpansionRecord {
+    constructor(expansion) {
+        super(expansion)
+    }
+
     getName() {
         return this.get('name')
     }

@@ -1,45 +1,30 @@
-import React, {forwardRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {
-    AddBox,
-    ArrowDownward,
-    Check,
-    ChevronLeft,
-    ChevronRight,
-    Clear, Delete,
-    DeleteOutline,
-    Edit,
-    FilterList,
-    FirstPage,
-    LastPage,
-    Remove,
-    SaveAlt,
-    Search,
-    ViewColumn
-} from "@material-ui/icons";
-import MaterialTable from "material-table";
-import { makeStyles } from '@material-ui/core/styles';
-import {
-    Button,
-    FormControl,
-    FormGroup,
-    FormHelperText,
-    FormLabel,
-    Grid,
-    Input, MenuItem,
-    Popover,
-    Select
-} from "@material-ui/core";
-import LoadingSpinner from "../utils/LoadingSpinner";
-import Link from "@material-ui/core/Link";
+import Card from "./models/Card";
 
-const IMAGE_PREFIX = 'https://api.cardmarket.com'
+const STOCK_CONTROLLER_URL = 'http://localhost:8081/stock'
+const ARTICLES_ENDPOINT = '/articles'
+const POST_CARDS_ENDPOINT = '/tomkm'
 
-export default function StockComponent(){
+export default function StockComponent() {
+    const [data, setData] = useState([])
+    useEffect(() => {
+        axios.get(STOCK_CONTROLLER_URL + ARTICLES_ENDPOINT)
+            .then(result => {
+                console.log(result.data)
+                setData(result.data)
+            })
+            .catch(error => console.log(error))
+    }, [data.length])
 
-    const columns = [
-
-    ]
-
+    return(
+        <div>
+            <ul>
+                {data.map(card => (
+                    <li>{Card(card)}</li>
+                ))}
+            </ul>
+        </div>
+    )
 
 }
