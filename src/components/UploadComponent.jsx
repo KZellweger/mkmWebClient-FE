@@ -167,7 +167,7 @@ export default function UploadComponent() {
     };
 
     const newCardForm = () => {
-        alert("Create Card Component")
+        alert("Create ArticleListItem Component")
     }
 
     const open = Boolean(anchorEl);

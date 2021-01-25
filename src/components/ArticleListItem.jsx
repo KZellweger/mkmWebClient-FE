@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Grid} from "@material-ui/core";
 import PropTypes from "prop-types";
-import Product from "./Product"
-import Expansion from "./Expansion";
+import Product from "./models/Product"
+import Expansion from "./models/Expansion";
 
-export default function Card(card) {
+export default function ArticleListItem(card) {
 
     const {
         articleId,
@@ -66,7 +66,7 @@ export default function Card(card) {
     );
 }
 
-Card.propTypes = {
+ArticleListItem.propTypes = {
     card: PropTypes.shape({
         articleId : PropTypes.number,
         languageCode : PropTypes.number,
