@@ -8,7 +8,7 @@ const ArticleRecord = new Immutable.Record({
     quantity: 0,
     inShoppingCart: false,
     seller: null,
-    lastEdited: null,
+    lastEdited: [],
     condition: "",
     foil: false,
     signed: false,
@@ -53,7 +53,8 @@ class Article extends ArticleRecord {
     }
 
     getLastEdited() {
-        return this.get('lastEdited')
+        let lastEdited = this.get('lastEdited')
+        return new Date(lastEdited[0],lastEdited[1],lastEdited[2],lastEdited[3],lastEdited[4]).toLocaleDateString()
     }
 
     getCondition() {
