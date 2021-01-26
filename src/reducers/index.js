@@ -1,6 +1,6 @@
-import stockReducer from "./stockReducer";
-import accountReducer from "./accountReducer";
 import {combineReducers} from "redux";
+import accountReducer from "./accountReducer";
+import stockReducer from "./stockReducer";
 
 
 export default combineReducers({

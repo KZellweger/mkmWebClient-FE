@@ -1,8 +1,5 @@
-import React, {forwardRef, useEffect, useState} from "react";
-import axios from "axios";
-import Article from "./models/Article";
-import Product from "./models/Product";
-import Expansion from "./models/Expansion";
+import {Popover, Typography} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
 import {
     AddBox,
     ArrowDownward,
@@ -21,10 +18,13 @@ import {
     Search,
     ViewColumn
 } from "@material-ui/icons";
-import {makeStyles} from "@material-ui/core/styles";
-import {Popover, Typography} from "@material-ui/core";
+import axios from "axios";
 import MaterialTable from "material-table";
+import React, {forwardRef, useEffect, useState} from "react";
 import {ARTICLES_FROM_DB} from "../constants/api-endpoints";
+import Article from "./models/Article";
+import Expansion from "./models/Expansion";
+import Product from "./models/Product";
 
 const useStyles = makeStyles((theme) => ({
     popover: {

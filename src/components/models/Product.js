@@ -1,5 +1,5 @@
-import Expansion from "./Expansion";
 import Immutable from 'immutable'
+
 const IMAGE_PREFIX = 'https://api.cardmarket.com'
 const ProductRecord = new Immutable.Record({
     productId: 0,
@@ -17,7 +17,7 @@ const ProductRecord = new Immutable.Record({
     expansionCollectionNumber: "",
     rarity: "",
     expansionName: "",
-},"Product Record")
+}, "Product Record")
 
 class Product extends ProductRecord {
     constructor(product) {
@@ -52,11 +52,11 @@ class Product extends ProductRecord {
         return this.get('imageUrl').replace(".", IMAGE_PREFIX)
     }
 
-    getRarity(){
+    getRarity() {
         return this.get('rarity')
     }
 
-    getExpansionName(){
+    getExpansionName() {
         return this.get('expansionName')
     }
 }

@@ -5,7 +5,7 @@ const initialState = {
 };
 
 function stockReducer(state = initialState, action) {
-    switch (action.type){
+    switch (action.type) {
         case ADD_ARTICLE:
             return state.articles.concat(action.payload)
         default:

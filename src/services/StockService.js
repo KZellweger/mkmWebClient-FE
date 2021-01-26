@@ -7,11 +7,11 @@ const CHANGE_ARTICLE_REST_API_URL = 'http://localhost:8081/stock/articles'
 
 
 class StockService {
-    getStockInformation(){
+    getStockInformation() {
         return axios.get(STOCK_REST_API_URL);
     }
 
-    postArticles(articles){
+    postArticles(articles) {
         return axios.post(CHANGE_ARTICLE_REST_API_URL, articles);
     }
 }

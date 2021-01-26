@@ -1,8 +1,7 @@
-
-export default function LoadingSpinner(){
-    return(
+export default function LoadingSpinner() {
+    return (
         <div>
-            <i className="spinner-grow" /> Loading
+            <i className="spinner-grow"/> Loading
         </div>
     )
 }

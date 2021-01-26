@@ -5,7 +5,7 @@ const initialState = {
 };
 
 function accountReducer(state = initialState, action) {
-    switch (action.type){
+    switch (action.type) {
         case ADD_ACCOUNT:
             return state.account.assign(action.payload)
         default:
