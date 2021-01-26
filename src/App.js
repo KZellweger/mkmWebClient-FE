@@ -8,15 +8,19 @@ function App() {
     return (
         <div id={"App"}>
             <Switch>
-                <Route path='/' exact>
-                    <Redirect to='/stock'/>
-                </Route>
-                <Route path='/stock' component={StockComponent}/>
-                <Route path='/account' component={AccountComponent}/>
-                <Route path='/upload' component={UploadComponent}/>
+                <Route path='/' component={AccountComponent}/>
             </Switch>
         </div>
     );
 }
+
+/*
+                <Route path='/' exact>
+                    <Redirect to='/stock'/>
+                </Route>
+                <Route path='/stock' component={StockComponent}/>
+                                <Route path='/upload' component={UploadComponent}/>
+
+ */
 
 export default App;

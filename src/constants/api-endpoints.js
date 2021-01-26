@@ -16,7 +16,7 @@ export const SERVER_URL = 'http://localhost:8081'
  * Used for interactions with {@link https://api.cardmarket.com/ws/documentation/API_2.0:Account_Management}
  * @type {string}
  */
-export const ACCOUNT = SERVER_URL + '/account'
+export const ACCOUNT = SERVER_URL + '/account/'
 /**
  * Product Information, includes {@link SERVER_URL}
  * Used for interactions with {@link https://api.cardmarket.com/ws/documentation/API_2.0:Product}

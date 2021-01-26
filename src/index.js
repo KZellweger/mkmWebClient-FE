@@ -6,14 +6,15 @@ import App from './App';
 import './App.scss';
 import NavigationBar from "./components/NavigationBar";
 import reportWebVitals from './reportWebVitals';
+import store from "./store";
 
 ReactDOM.render(
-    <Provider>
         <BrowserRouter>
+            <Provider store={store}>
             <NavigationBar/>
             <App/>
-        </BrowserRouter>
-    </Provider>,
+            </Provider>
+        </BrowserRouter>,
     document.getElementById('root')
 );
 
