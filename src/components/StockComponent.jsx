@@ -22,9 +22,9 @@ import axios from "axios";
 import MaterialTable from "material-table";
 import React, {forwardRef, useEffect, useState} from "react";
 import {ARTICLES_FROM_DB} from "../constants/api-endpoints";
-import Article from "./models/Article";
-import Expansion from "./models/Expansion";
-import Product from "./models/Product";
+import Article from "../models/Article";
+import Expansion from "../models/Expansion";
+import Product from "../models/Product";
 
 const useStyles = makeStyles((theme) => ({
     popover: {

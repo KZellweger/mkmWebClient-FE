@@ -1,8 +1,8 @@
 import {Grid} from "@material-ui/core";
 import PropTypes from "prop-types";
 import React from "react";
-import Expansion from "./models/Expansion";
-import Product from "./models/Product"
+import Expansion from "../models/Expansion";
+import Product from "../models/Product"
 
 export default function ArticleListItem(card) {
 

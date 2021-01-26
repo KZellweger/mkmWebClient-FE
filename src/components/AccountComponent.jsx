@@ -1,61 +1,18 @@
-import axios from "axios";
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Button, Col, Container, Row} from "react-bootstrap";
 import Table from 'react-bootstrap/Table'
-import {useHistory} from "react-router-dom";
-
-import {ACCOUNT, PRODUCT} from "../constants/api-endpoints";
+import {shallowEqual, useDispatch, useSelector} from "react-redux"
+import {deleteProductDB, getAccount, readProductsFromMkm, updateProductsDB} from "../actions/accountActions";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
+
 export default function AccountComponent() {
-    const [account, setAccount] = useState({
-        userId: 0,
-        userName: '',
-        userType: '',
-        firstName: '',
-        lastName: '',
-        registrationDate: '',
-        totalBalance: 0
-    })
-
-    const [loading, setLoading] = useState(false)
-    const history = useHistory()
-
-    const handleLogin = () => {
-        //Todo
-    }
-
-    // TODO: actual endpoints should maybe be defined by actions. We will se when we integrate Redux middelware
-    const deleteMkmDB = () => {
-        axios.get(PRODUCT + "/reset")
-            .then(res => console.log(res.status))
-            .catch(error => alert(error.message))
-    }
-    const readMkmDB = () => {
-        setLoading(true)
-        axios.get(PRODUCT + "/import")
-            .then(res => setLoading(false))
-            .catch(error => setLoading(false))
-
-    }
-    const mergeMkmDB = () => {
-        axios.get(PRODUCT + "/update")
-            .then(res => console.log(res.status))
-            .catch(error => alert(error.message))
-    }
-
-    const handleChange = (field, newValue) => {
-        setAccount(prev => ({
-            ...prev,
-            [field]: newValue
-        }))
-    }
-
+    const account = useSelector(state => state.account, shallowEqual)
+    const loading = useSelector(state => state.isLoading)
+    const dispatch = useDispatch()
     useEffect(() => {
-        axios.get(ACCOUNT)
-            .then(result => setAccount(result.data))
-            .catch(error => alert(error.message))
-    }, [])
+        dispatch(getAccount())
+    })
 
     return (
         <div>
@@ -63,17 +20,17 @@ export default function AccountComponent() {
                 <Row>
                     <Col>
                         <Button variant="danger" onClick={() => {
-                            if (window.confirm('Are you sure you want to clear the Database?\n This will delete all known Information about Products and Expansions')) deleteMkmDB()
+                            if (window.confirm('Are you sure you want to clear the Database?\n This will delete all known Information about Products and Expansions')) dispatch(deleteProductDB())
                         }}>Clear Product Database</Button>
                     </Col>
                     <Col>
                         <Button variant="danger" onClick={() => {
-                            if (window.confirm('Are you sure you want to reload the Database?')) readMkmDB()
+                            if (window.confirm('Are you sure you want to reload the Database?')) dispatch(readProductsFromMkm())
                         }}>Read MKM Product Catalogue</Button>
                     </Col>
                     <Col>
                         <Button variant="danger" onClick={() => {
-                            if (window.confirm('Are you sure you want to update the Database?')) mergeMkmDB()
+                            if (window.confirm('Are you sure you want to update the Database?')) dispatch(updateProductsDB())
                         }}>Update MKM Product Catalogue</Button>
                     </Col>
                 </Row>
@@ -115,6 +72,4 @@ export default function AccountComponent() {
             }
         </div>
     )
-
-
 }
