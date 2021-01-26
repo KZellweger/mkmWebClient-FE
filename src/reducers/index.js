@@ -1,9 +1,9 @@
-const initialState = {
-    articles: []
-};
+import stockReducer from "./stockReducer";
+import accountReducer from "./accountReducer";
+import {combineReducers} from "redux";
 
-function rootReducer(state = initialState, action) {
-    return state;
-}
 
-export default rootReducer;
+export default combineReducers({
+    accountReducer,
+    stockReducer
+})

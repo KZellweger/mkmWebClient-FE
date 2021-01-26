@@ -1,11 +1,11 @@
+import axios from "axios";
 import React, {useEffect, useState} from 'react';
+import {Button, Col, Container, Row} from "react-bootstrap";
 import Table from 'react-bootstrap/Table'
 import {useHistory} from "react-router-dom";
-import axios from "axios";
-import {Button, Col, Container, Row} from "react-bootstrap";
-import LoadingSpinner from "../utils/LoadingSpinner";
 
-import {ACCOUNT,PRODUCT} from "../constants/api-endpoints";
+import {ACCOUNT, PRODUCT} from "../constants/api-endpoints";
+import LoadingSpinner from "../utils/LoadingSpinner";
 
 export default function AccountComponent() {
     const [account, setAccount] = useState({
@@ -32,10 +32,10 @@ export default function AccountComponent() {
             .catch(error => alert(error.message))
     }
     const readMkmDB = () => {
-            setLoading(true)
-            axios.get(PRODUCT + "/import")
-                .then(res => setLoading(false))
-                .catch(error => setLoading(false))
+        setLoading(true)
+        axios.get(PRODUCT + "/import")
+            .then(res => setLoading(false))
+            .catch(error => setLoading(false))
 
     }
     const mergeMkmDB = () => {
@@ -61,57 +61,57 @@ export default function AccountComponent() {
         <div>
             <Container>
                 <Row>
-                <Col>
-                    <Button variant="danger" onClick={() => {
-                        if (window.confirm('Are you sure you want to clear the Database?\n This will delete all known Information about Products and Expansions')) deleteMkmDB()
-                    }}>Clear Product Database</Button>
-                </Col>
-                <Col>
-                    <Button variant="danger" onClick={() => {
-                        if (window.confirm('Are you sure you want to reload the Database?')) readMkmDB()
-                    }}>Read MKM Product Catalogue</Button>
-                </Col>
-                <Col>
-                    <Button variant="danger" onClick={() => {
-                        if (window.confirm('Are you sure you want to update the Database?')) mergeMkmDB()
-                    }}>Update MKM Product Catalogue</Button>
-                </Col>
+                    <Col>
+                        <Button variant="danger" onClick={() => {
+                            if (window.confirm('Are you sure you want to clear the Database?\n This will delete all known Information about Products and Expansions')) deleteMkmDB()
+                        }}>Clear Product Database</Button>
+                    </Col>
+                    <Col>
+                        <Button variant="danger" onClick={() => {
+                            if (window.confirm('Are you sure you want to reload the Database?')) readMkmDB()
+                        }}>Read MKM Product Catalogue</Button>
+                    </Col>
+                    <Col>
+                        <Button variant="danger" onClick={() => {
+                            if (window.confirm('Are you sure you want to update the Database?')) mergeMkmDB()
+                        }}>Update MKM Product Catalogue</Button>
+                    </Col>
                 </Row>
             </Container>
             <hr/>
-            {loading ? <LoadingSpinner /> :
-            <Table striped bordered hover variant="dark">
-                <tbody className="text-center">
-                <tr>
-                    <td>Account Id</td>
-                    <td>{account.userId}</td>
-                </tr>
-                <tr>
-                    <td>Username</td>
-                    <td>{account.userName}</td>
-                </tr>
-                <tr>
-                    <td>Registration Date</td>
-                    <td>{account.registrationDate}</td>
-                </tr>
-                <tr>
-                    <td>UserType</td>
-                    <td>{account.userType}</td>
-                </tr>
-                <tr>
-                    <td>First Name</td>
-                    <td>{account.firstName}</td>
-                </tr>
-                <tr>
-                    <td>Last Name</td>
-                    <td>{account.lastName}</td>
-                </tr>
-                <tr>
-                    <td>Total Balance</td>
-                    <td>{account.totalBalance}</td>
-                </tr>
-                </tbody>
-            </Table>
+            {loading ? <LoadingSpinner/> :
+                <Table striped bordered hover variant="dark">
+                    <tbody className="text-center">
+                    <tr>
+                        <td>Account Id</td>
+                        <td>{account.userId}</td>
+                    </tr>
+                    <tr>
+                        <td>Username</td>
+                        <td>{account.userName}</td>
+                    </tr>
+                    <tr>
+                        <td>Registration Date</td>
+                        <td>{account.registrationDate}</td>
+                    </tr>
+                    <tr>
+                        <td>UserType</td>
+                        <td>{account.userType}</td>
+                    </tr>
+                    <tr>
+                        <td>First Name</td>
+                        <td>{account.firstName}</td>
+                    </tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td>{account.lastName}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Balance</td>
+                        <td>{account.totalBalance}</td>
+                    </tr>
+                    </tbody>
+                </Table>
             }
         </div>
     )

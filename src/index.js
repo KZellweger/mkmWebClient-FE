@@ -5,13 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import NavigationBar from "./components/NavigationBar";
 import {BrowserRouter} from "react-router-dom";
+import {Provider} from "react-redux"
 
 ReactDOM.render(
-  <BrowserRouter>
-    <NavigationBar />
-    <App />
-  </BrowserRouter>,
-  document.getElementById('root')
+    <Provider>
+        <BrowserRouter>
+            <NavigationBar/>
+            <App/>
+        </BrowserRouter>
+    </Provider>,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
