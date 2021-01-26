@@ -5,8 +5,7 @@ import axios from "axios";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
-const ACCOUNT_REST_API_URL = 'http://localhost:8081/account/'
-const PRODUCTDATABASE = 'http://localhost:8081/product'
+import {ACCOUNT,PRODUCT} from "../constants/api-endpoints";
 
 export default function AccountComponent() {
     const [account, setAccount] = useState({
@@ -26,20 +25,21 @@ export default function AccountComponent() {
         //Todo
     }
 
+    // TODO: actual endpoints should maybe be defined by actions. We will se when we integrate Redux middelware
     const deleteMkmDB = () => {
-        axios.get(PRODUCTDATABASE + "/reset")
+        axios.get(PRODUCT + "/reset")
             .then(res => console.log(res.status))
             .catch(error => alert(error.message))
     }
     const readMkmDB = () => {
             setLoading(true)
-            axios.get(PRODUCTDATABASE + "/import")
+            axios.get(PRODUCT + "/import")
                 .then(res => setLoading(false))
                 .catch(error => setLoading(false))
 
     }
     const mergeMkmDB = () => {
-        axios.get(PRODUCTDATABASE + "/update")
+        axios.get(PRODUCT + "/update")
             .then(res => console.log(res.status))
             .catch(error => alert(error.message))
     }
@@ -52,7 +52,7 @@ export default function AccountComponent() {
     }
 
     useEffect(() => {
-        axios.get(ACCOUNT_REST_API_URL)
+        axios.get(ACCOUNT)
             .then(result => setAccount(result.data))
             .catch(error => alert(error.message))
     }, [])

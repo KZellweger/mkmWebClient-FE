@@ -24,10 +24,7 @@ import {
 import {makeStyles} from "@material-ui/core/styles";
 import {Popover, Typography} from "@material-ui/core";
 import MaterialTable from "material-table";
-
-const STOCK_CONTROLLER_URL = 'http://localhost:8081/stock'
-const ARTICLES_ENDPOINT = '/articles'
-const POST_CARDS_ENDPOINT = '/tomkm'
+import {ARTICLES_FROM_DB} from "../constants/api-endpoints";
 
 const useStyles = makeStyles((theme) => ({
     popover: {
@@ -46,7 +43,7 @@ export default function StockComponent() {
     const classes = useStyles();
 
     useEffect(() => {
-        axios.get(STOCK_CONTROLLER_URL + ARTICLES_ENDPOINT)
+        axios.get(ARTICLES_FROM_DB)
             .then(result => {
                 //console.log(result.data)
                 result.data.map(card => {
