@@ -52,7 +52,7 @@ export default function UploadComponent() {
             categoryName: "",
             expansionId: null,
             dateAdded: null,
-            metaproductId: 8090,
+            metaproductId: 0,
             totalReprints: 0,
             localizations: [],
             selfUrl: "",
@@ -167,7 +167,7 @@ export default function UploadComponent() {
     };
 
     const newCardForm = () => {
-        alert("Create Card Component")
+        alert("Create ArticleListItem Component")
     }
 
     const open = Boolean(anchorEl);
