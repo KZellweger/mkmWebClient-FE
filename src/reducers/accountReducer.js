@@ -22,7 +22,6 @@ function accountReducer(state = initialState, action) {
                 lastName: action.payload.lastName,
                 registrationDate: action.payload.registrationDate,
                 totalBalance: action.payload.totalBalance,
-
             }
         default:
             //console.log("Unknown Action: " + action.type)

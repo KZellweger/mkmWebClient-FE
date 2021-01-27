@@ -7,68 +7,41 @@ import {
     MERGE_PRODUCTS_REQUEST,
     MERGE_PRODUCTS_SUCCESS,
     MERGE_PRODUCTS_FAILURE,
-    DELETE_PRODUCTS_REQUEST, DELETE_PRODUCTS_SUCCESS, DELETE_PRODUCTS_FAILURE
+    DELETE_PRODUCTS_REQUEST, DELETE_PRODUCTS_SUCCESS, DELETE_PRODUCTS_FAILURE, LOAD_PRODUCTS_SUCCESS
 } from "../constants/action-types";
 import {ACCOUNT, PRODUCT} from "../constants/api-endpoints";
+import {DATEFORMAT_OPTIONS} from "../constants/utils";
 
-// Action Creators
-export function requestAccount() {
-    return {type: LOAD_ACCOUNT_REQUEST}
-}
+/*
+ Action Creators,
+ We only create a Function for Actions if they have actually some work to do.
+ Otherwise we dispatch the Action type directly in the Middleware.
+ */
 
-export function addAccount(payload) {
-    return {type: LOAD_ACCOUNT_SUCCESS, payload: payload}
-}
-
-export function accountFailure(payload) {
-    return {type: LOAD_ACCOUNT_FAILURE, payload: payload}
-}
-
-export function requestProductLoad() {
-    return {type: LOAD_PRODUCTS_REQUEST}
-}
-
-export function successProductLoad() {
-    return {type: LOAD_ACCOUNT_SUCCESS}
-}
-
-export function failureProductLoad(payload) {
-    return {type: LOAD_ACCOUNT_FAILURE, payload: payload}
+export function addAccount(data) {
+    const account = {
+            userId: data.userId,
+            userName: data.userName,
+            userType: data.userType,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            registrationDate: new Date(data.registrationDate[0],data.registrationDate[1],data.registrationDate[3]).toLocaleString("de-CH",DATEFORMAT_OPTIONS) ,
+            totalBalance: data.totalBalance,
+    }
+    return {type: LOAD_ACCOUNT_SUCCESS, payload: account}
 }
 
-export function requestProductMerge() {
-    return {type: MERGE_PRODUCTS_REQUEST}
-}
-
-export function successProductMerge(payload) {
-    return {type: MERGE_PRODUCTS_SUCCESS}
-}
-
-export function failureProductMerge(payload) {
-    return {type: MERGE_PRODUCTS_FAILURE, payload: payload}
-}
-export function requestProductDelete() {
-    return {type: DELETE_PRODUCTS_REQUEST}
-}
-
-export function successProductDelete() {
-    return {type: DELETE_PRODUCTS_SUCCESS}
-}
-
-export function failureProductDelete(payload) {
-    return {type: DELETE_PRODUCTS_FAILURE, payload: payload}
-}
 // Async Actions
 export const getAccount = () => {
     return (dispatch) => {
-        dispatch(requestAccount())
+        dispatch({type: LOAD_ACCOUNT_REQUEST})
         return axios.get(ACCOUNT)
             .then(result => {
                 console.log(result.data)
                 dispatch(addAccount(result.data))
             })
             .catch(error => {
-                dispatch(accountFailure(error))
+                dispatch({type: LOAD_ACCOUNT_FAILURE,payload:error})
             })
     }
 }
@@ -88,39 +61,39 @@ export const getAccount = () => {
 
 export const deleteProductDB = () => {
     return (dispatch) => {
-        dispatch(requestProductDelete())
+        dispatch({type:DELETE_PRODUCTS_REQUEST})
         return axios.get(PRODUCT + "/reset")
             .then(() => {
-                dispatch(successProductDelete())
+                dispatch({type:DELETE_PRODUCTS_SUCCESS})
             })
             .catch(error => {
-                dispatch(failureProductDelete(error))
+                dispatch({type:DELETE_PRODUCTS_FAILURE,payload:error})
             })
     }
 }
 
 export const readProductsFromMkm = () => {
     return (dispatch) => {
-        dispatch(requestProductLoad())
+        dispatch({type:LOAD_PRODUCTS_REQUEST})
         return axios.get(PRODUCT + "/import")
             .then(() => {
-                dispatch(successProductLoad())
+                dispatch({type:LOAD_PRODUCTS_SUCCESS})
             })
             .catch(error => {
-                dispatch(failureProductLoad(error))
+                dispatch({type:LOAD_ACCOUNT_FAILURE,payload:error})
             })
     }
 }
 
 export const updateProductsDB = () => {
     return (dispatch) => {
-        dispatch(requestProductMerge())
+        dispatch({type:MERGE_PRODUCTS_REQUEST})
         return axios.get(PRODUCT + "/update")
             .then(() => {
-                dispatch(successProductMerge())
+                dispatch({type:MERGE_PRODUCTS_SUCCESS})
             })
             .catch(error => {
-                dispatch(failureProductMerge(error))
+                dispatch({type:MERGE_PRODUCTS_FAILURE,payload:error})
             })
     }
 }
