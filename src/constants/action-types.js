@@ -5,11 +5,31 @@
  */
 
 // Stock Actions
+
 /**
  * Add a {@link https://api.cardmarket.com/ws/documentation/API_2.0:Entities:Article} to the Redux Store.
  * @type {string}
  */
 export const ADD_ARTICLE = "ADD_ARTICLE"
+
+
+/**
+ * Request the Articles from the Backend-API which are stored in the Local Databse
+ * @type {string}
+ */
+export const LOAD_ARTICLES_REQUEST = "LOAD_ARTICLES_REQUEST"
+
+/**
+ * Indicate Successful request
+ * @type {string}
+ */
+export const LOAD_ARTICLES_SUCCESS = "LOAD_ARTICLES_SUCCESS"
+/**
+ * Indicate failed request
+ * @type {string}
+ */
+export const LOAD_ARTICLES_FAILURE = "LOAD_ARTICLES_FAILURE"
+
 
 //Account Actions
 /**

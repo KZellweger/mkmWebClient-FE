@@ -1,1 +1,2 @@
 export const DATEFORMAT_OPTIONS = { year: 'numeric', month: '2-digit', day: '2-digit' };
+export const DATE_TIME_FORMAT_OPTIONS = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute:'2-digit' };

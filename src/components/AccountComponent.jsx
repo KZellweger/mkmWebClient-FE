@@ -8,7 +8,7 @@ import LoadingSpinner from "../utils/LoadingSpinner";
 
 export default function AccountComponent() {
     const account = useSelector(state => state.account)
-    const loading = useSelector(state => state.isLoading)
+    const loading = useSelector(state => state.common.loading.account)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getAccount())

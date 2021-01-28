@@ -8,7 +8,11 @@ function App() {
     return (
         <div id={"App"}>
             <Switch>
-                <Route path='/' component={AccountComponent}/>
+                <Route path='/' exact>
+                    <Redirect to='/stock'/>
+                </Route>
+                <Route path='/stock' component={StockComponent}/>
+                <Route path='/account' component={AccountComponent}/>
             </Switch>
         </div>
     );

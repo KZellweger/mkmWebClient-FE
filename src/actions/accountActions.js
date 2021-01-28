@@ -26,12 +26,14 @@ export function addAccount(data) {
             firstName: data.firstName,
             lastName: data.lastName,
             registrationDate: new Date(data.registrationDate[0],data.registrationDate[1],data.registrationDate[3]).toLocaleString("de-CH",DATEFORMAT_OPTIONS) ,
-            totalBalance: data.totalBalance,
+            totalBalance: data.totalBalance + " €",
     }
     return {type: LOAD_ACCOUNT_SUCCESS, payload: account}
 }
 
 // Async Actions
+
+
 export const getAccount = () => {
     return (dispatch) => {
         dispatch({type: LOAD_ACCOUNT_REQUEST})
@@ -45,19 +47,6 @@ export const getAccount = () => {
             })
     }
 }
-
-/**
- *  Linuses neat way:
- *  export const getAccount () => async dispatch =>{
- *      {
- *
- *      }
- *      const res = await axios.get(ACCOUNT)
- *      const acc = new Account(res.data)
- *      dispatch(addAccount(acc))
- *      dispatch(apiSuccess())
- *  }
- */
 
 export const deleteProductDB = () => {
     return (dispatch) => {

@@ -21,60 +21,28 @@ import {
 import axios from "axios";
 import MaterialTable from "material-table";
 import React, {forwardRef, useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {getAccount} from "../actions/accountActions";
+import {getArticles} from "../actions/stockActions";
 import {ARTICLES_FROM_DB} from "../constants/api-endpoints";
 import Article from "../models/Article";
 import Expansion from "../models/Expansion";
 import Product from "../models/Product";
 
-const useStyles = makeStyles((theme) => ({
-    popover: {
-        pointerEvents: 'none',
-    },
-    paper: {
-        padding: theme.spacing(1),
-    }
-}));
-
 
 export default function StockComponent() {
-    const [data, setData] = useState([])
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [popImg, setPopImg] = useState('')
-    const classes = useStyles();
-
+    const articles = useSelector(state => state.stock)
+    const loading = useSelector(state => state.common.loading.stock)
+    const dispatch = useDispatch()
     useEffect(() => {
-        axios.get(ARTICLES_FROM_DB)
-            .then(result => {
-                //console.log(result.data)
-                result.data.map(card => {
-                    const article = new Article(card)
-                    const product = new Product(card.product)
-                    const expansion = new Expansion(card.product.expansion)
-                    setData(data => [...data, {article: article, product: product, expansion: expansion}])
-                })
-            })
-            .then(() => console.log(data)
-            )
-            .catch(error => console.log(error))
-    }, [])
-
+        dispatch(getArticles())
+    },[])
     const handleEdit = () => {
         //todo
     }
     const handleDelete = () => {
         //todo
     }
-
-    const handlePopoverOpen = (event, url) => {
-        setAnchorEl(event.currentTarget);
-        setPopImg(url)
-    };
-
-    const handlePopoverClose = () => {
-        setAnchorEl(null);
-    };
-
-    const open = Boolean(anchorEl);
 
     // Table options
     const options = {
@@ -97,45 +65,44 @@ export default function StockComponent() {
     const columns = [
         {
             title: "Bild", field: "imageurl", render: rowData => {
-                return <img src={rowData.product.getImageURL()} onMouseEnter={event => {
-                    handlePopoverOpen(event, rowData.product.getImageURL())
-                }} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}}/>
+                return <img src={rowData.article.product.imageUrl}
+                 style={{width: 50, borderRadius: '10%'}}/>
             }
         },
         {
             title: "EN-Name", field: "name", render: rowData => {
-                return <Typography>{rowData.product.getName()}</Typography>
+                return <Typography>{rowData.article.product.name}</Typography>
             }
         },
         {
             title: "Set Title", field: "expansionName", render: rowData => {
-                return <Typography>{rowData.product.getExpansionName()}</Typography>
+                return <Typography>{rowData.article.product.expansionName}</Typography>
             }
         },
-        //{title: "Sprache", field: "language", render: rowData => {return <Select value='en'>{rowData.product.localizations !== null ?  rowData.product.localizations.map(locale => <MenuItem value={locale['language']}>{locale['productName']}</MenuItem>) : <MenuItem value="en">"Unknown"</MenuItem>}</Select>}},
+        //{title: "Sprache", field: "language", render: rowData => {return <Select value='en'>{rowData.article.article.product.localizations !== null ?  rowData.article.article.product.localizations.map(locale => <MenuItem value={locale['language']}>{locale['productName']}</MenuItem>) : <MenuItem value="en">"Unknown"</MenuItem>}</Select>}},
         {
             title: "Rarity", field: "rarity", render: rowData => {
-                return <Typography>{rowData.product.getRarity()}</Typography>
+                return <Typography>{rowData.article.product.rarity}</Typography>
             }
         },
         {
             title: "Condition", field: "condition", render: rowData => {
-                return <Typography>{rowData.article.getCondition()}</Typography>
+                return <Typography>{rowData.article.condition}</Typography>
             }
         },
         {
             title: "Anzahl", field: "quantity", render: rowData => {
-                return <p>{rowData.article.getQuantity()}</p>
+                return <p>{rowData.article.quantity}</p>
             }
         },
         {
             title: "Preis", field: "price", render: rowData => {
-                return <p>{rowData.article.getPrice()}</p>
+                return <p>{rowData.article.price}</p>
             }
         },
         {
             title: "Letzte Änderung", field: "lastEdited", render: rowData => {
-                return <p>{rowData.article.getLastEdited()}</p>
+                return <p>{rowData.article.lastEdited}</p>
             }
         }
     ]
@@ -165,32 +132,11 @@ export default function StockComponent() {
             <MaterialTable
                 options={options}
                 columns={columns}
-                data={data}
+                data={articles}
                 icons={icons}
                 actions={actions}
                 title="My Stock"
             />
-            <Popover
-                id="mouse-over-popover"
-                className={classes.popover}
-                classes={{
-                    paper: classes.paper,
-                }}
-                open={open}
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                onClose={handlePopoverClose}
-                disableRestoreFocus
-            >
-                <img src={popImg}/>
-            </Popover>
         </div>
 
     )
