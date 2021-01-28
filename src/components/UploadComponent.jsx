@@ -32,6 +32,7 @@ import axios from "axios";
 import MaterialTable from "material-table";
 import React, {forwardRef, useState} from "react";
 import {CSV_TO_MKM, CSV_UPLOAD, IMAGE_PREFIX} from "../constants/api-endpoints";
+import {TABLE_ICONS} from "../constants/utils";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
 export default function UploadComponent() {
@@ -220,27 +221,6 @@ export default function UploadComponent() {
         }
     ]
 
-    const icons = {
-        Add: forwardRef((props, ref) => <AddBox {...props} ref={ref}/>),
-        Check: forwardRef((props, ref) => <Check {...props} ref={ref}/>),
-        Clear: forwardRef((props, ref) => <Clear {...props} ref={ref}/>),
-        Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref}/>),
-        DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref}/>),
-        Edit: forwardRef((props, ref) => <Edit {...props} ref={ref}/>),
-        Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref}/>),
-        Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref}/>),
-        FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref}/>),
-        LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref}/>),
-        NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref}/>),
-        PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref}/>),
-        ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref}/>),
-        Search: forwardRef((props, ref) => <Search {...props} ref={ref}/>),
-        SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref}/>),
-        ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref}/>),
-        ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref}/>)
-    };
-
-
     return (
         <div>
             <Grid container>
@@ -274,7 +254,7 @@ export default function UploadComponent() {
                     options={options}
                     columns={columns}
                     data={cardList}
-                    icons={icons}
+                    icons={TABLE_ICONS}
                     actions={actions}
                     title="Sorter Results"
                 />
