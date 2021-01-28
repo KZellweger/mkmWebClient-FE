@@ -2,7 +2,6 @@ import React from "react";
 import {Redirect, Route, Switch} from 'react-router-dom';
 import AccountComponent from "./components/AccountComponent";
 import StockComponent from "./components/StockComponent";
-import UploadComponent from "./components/UploadComponent";
 
 function App() {
     return (

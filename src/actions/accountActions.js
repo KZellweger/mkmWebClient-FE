@@ -1,13 +1,16 @@
 import axios from "axios";
 import {
+    DELETE_PRODUCTS_FAILURE,
+    DELETE_PRODUCTS_REQUEST,
+    DELETE_PRODUCTS_SUCCESS,
+    LOAD_ACCOUNT_FAILURE,
     LOAD_ACCOUNT_REQUEST,
     LOAD_ACCOUNT_SUCCESS,
-    LOAD_ACCOUNT_FAILURE,
     LOAD_PRODUCTS_REQUEST,
-    MERGE_PRODUCTS_REQUEST,
-    MERGE_PRODUCTS_SUCCESS,
+    LOAD_PRODUCTS_SUCCESS,
     MERGE_PRODUCTS_FAILURE,
-    DELETE_PRODUCTS_REQUEST, DELETE_PRODUCTS_SUCCESS, DELETE_PRODUCTS_FAILURE, LOAD_PRODUCTS_SUCCESS
+    MERGE_PRODUCTS_REQUEST,
+    MERGE_PRODUCTS_SUCCESS
 } from "../constants/action-types";
 import {ACCOUNT, PRODUCT} from "../constants/api-endpoints";
 import {DATEFORMAT_OPTIONS} from "../constants/utils";
@@ -20,13 +23,13 @@ import {DATEFORMAT_OPTIONS} from "../constants/utils";
 
 export function addAccount(data) {
     const account = {
-            userId: data.userId,
-            userName: data.userName,
-            userType: data.userType,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            registrationDate: new Date(data.registrationDate[0],data.registrationDate[1],data.registrationDate[3]).toLocaleString("de-CH",DATEFORMAT_OPTIONS) ,
-            totalBalance: data.totalBalance + " €",
+        userId: data.userId,
+        userName: data.userName,
+        userType: data.userType,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        registrationDate: new Date(data.registrationDate[0], data.registrationDate[1], data.registrationDate[3]).toLocaleString("de-CH", DATEFORMAT_OPTIONS),
+        totalBalance: data.totalBalance + " €",
     }
     return {type: LOAD_ACCOUNT_SUCCESS, payload: account}
 }
@@ -43,46 +46,46 @@ export const getAccount = () => {
                 dispatch(addAccount(result.data))
             })
             .catch(error => {
-                dispatch({type: LOAD_ACCOUNT_FAILURE,payload:error})
+                dispatch({type: LOAD_ACCOUNT_FAILURE, payload: error})
             })
     }
 }
 
 export const deleteProductDB = () => {
     return (dispatch) => {
-        dispatch({type:DELETE_PRODUCTS_REQUEST})
+        dispatch({type: DELETE_PRODUCTS_REQUEST})
         return axios.get(PRODUCT + "/reset")
             .then(() => {
-                dispatch({type:DELETE_PRODUCTS_SUCCESS})
+                dispatch({type: DELETE_PRODUCTS_SUCCESS})
             })
             .catch(error => {
-                dispatch({type:DELETE_PRODUCTS_FAILURE,payload:error})
+                dispatch({type: DELETE_PRODUCTS_FAILURE, payload: error})
             })
     }
 }
 
 export const readProductsFromMkm = () => {
     return (dispatch) => {
-        dispatch({type:LOAD_PRODUCTS_REQUEST})
+        dispatch({type: LOAD_PRODUCTS_REQUEST})
         return axios.get(PRODUCT + "/import")
             .then(() => {
-                dispatch({type:LOAD_PRODUCTS_SUCCESS})
+                dispatch({type: LOAD_PRODUCTS_SUCCESS})
             })
             .catch(error => {
-                dispatch({type:LOAD_ACCOUNT_FAILURE,payload:error})
+                dispatch({type: LOAD_ACCOUNT_FAILURE, payload: error})
             })
     }
 }
 
 export const updateProductsDB = () => {
     return (dispatch) => {
-        dispatch({type:MERGE_PRODUCTS_REQUEST})
+        dispatch({type: MERGE_PRODUCTS_REQUEST})
         return axios.get(PRODUCT + "/update")
             .then(() => {
-                dispatch({type:MERGE_PRODUCTS_SUCCESS})
+                dispatch({type: MERGE_PRODUCTS_SUCCESS})
             })
             .catch(error => {
-                dispatch({type:MERGE_PRODUCTS_FAILURE,payload:error})
+                dispatch({type: MERGE_PRODUCTS_FAILURE, payload: error})
             })
     }
 }

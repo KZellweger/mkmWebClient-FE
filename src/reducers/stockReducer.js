@@ -1,4 +1,4 @@
-import {ADD_ARTICLE, LOAD_ARTICLES_SUCCESS} from "../constants/action-types";
+import {LOAD_ARTICLES_SUCCESS} from "../constants/action-types";
 
 /**
  * State of the Stock. Holds a list of articles with a flag for each article if it was modified in the current session.
@@ -12,7 +12,7 @@ function stockReducer(state = initialState, action) {
     switch (action.type) {
         case LOAD_ARTICLES_SUCCESS:
             let newArticles = []
-            action.payload.map(a => newArticles.push({modified:false, article: a}))
+            action.payload.map(a => newArticles.push({modified: false, article: a}))
             state = state.articles.concat(newArticles)
             return state
 

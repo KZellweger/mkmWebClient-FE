@@ -66,7 +66,6 @@ export const LOAD_PRODUCTS_SUCCESS = "LOAD_PRODUCTS_SUCCESS"
 export const LOAD_PRODUCTS_FAILURE = "LOAD_PRODUCTS_FAILURE"
 
 
-
 /**
  * Merge Current Products Database with MKM
  * @type {string}
@@ -98,3 +97,16 @@ export const DELETE_PRODUCTS_SUCCESS = "MERGE_PRODUCTS_SUCCESS"
  * @type {string}
  */
 export const DELETE_PRODUCTS_FAILURE = "MERGE_PRODUCTS_FAILURE"
+
+// UI Utils
+/**
+ * Trigger Popover Open
+ * @type {string}
+ */
+export const POPOVER_OPEN = "POPOVER_OPEN"
+
+/**
+ * Trigger Popover Close
+ * @type {string}
+ */
+export const POPOVER_ClOSE = "POPOVER_ClOSE"

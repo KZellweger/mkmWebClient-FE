@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Button, Col, Container, Row} from "react-bootstrap";
 import Table from 'react-bootstrap/Table'
-import {shallowEqual, useDispatch, useSelector} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import {deleteProductDB, getAccount, readProductsFromMkm, updateProductsDB} from "../actions/accountActions";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
@@ -12,7 +12,7 @@ export default function AccountComponent() {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getAccount())
-    },[])
+    }, [])
 
     return (
         <div>

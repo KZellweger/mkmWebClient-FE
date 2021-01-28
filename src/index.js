@@ -9,12 +9,12 @@ import reportWebVitals from './reportWebVitals';
 import store from "./store";
 
 ReactDOM.render(
-        <BrowserRouter>
-            <Provider store={store}>
+    <BrowserRouter>
+        <Provider store={store}>
             <NavigationBar/>
             <App/>
-            </Provider>
-        </BrowserRouter>,
+        </Provider>
+    </BrowserRouter>,
     document.getElementById('root')
 );
 

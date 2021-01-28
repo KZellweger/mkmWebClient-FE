@@ -1,13 +1,13 @@
 import {LOAD_ACCOUNT_SUCCESS} from "../constants/action-types";
 
 const initialState = {
-        userId: 0,
-        userName: '',
-        userType: '',
-        firstName: '',
-        lastName: '',
-        registrationDate: '',
-        totalBalance: 0
+    userId: 0,
+    userName: '',
+    userType: '',
+    firstName: '',
+    lastName: '',
+    registrationDate: '',
+    totalBalance: 0
 };
 
 function accountReducer(state = initialState, action) {

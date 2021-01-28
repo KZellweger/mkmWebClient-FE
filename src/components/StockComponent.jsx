@@ -1,5 +1,4 @@
 import {Popover, Typography} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
 import {
     AddBox,
     ArrowDownward,
@@ -18,30 +17,44 @@ import {
     Search,
     ViewColumn
 } from "@material-ui/icons";
-import axios from "axios";
 import MaterialTable from "material-table";
-import React, {forwardRef, useEffect, useState} from "react";
+import React, {forwardRef, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getAccount} from "../actions/accountActions";
+import {popOverClose, popOverOpen} from "../actions/commonActions";
 import {getArticles} from "../actions/stockActions";
-import {ARTICLES_FROM_DB} from "../constants/api-endpoints";
-import Article from "../models/Article";
-import Expansion from "../models/Expansion";
-import Product from "../models/Product";
+import {popOverStyles} from "../constants/utils";
+import LoadingSpinner from "../utils/LoadingSpinner";
 
 
 export default function StockComponent() {
     const articles = useSelector(state => state.stock)
     const loading = useSelector(state => state.common.loading.stock)
+    const open = useSelector(state => state.common.popover.open)
+    const anchorEl = useSelector(state => state.common.popover.anchorEl)
+    const popOverImage = useSelector(state => state.common.popover.popOverImage)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getArticles())
-    },[])
+    }, [])
     const handleEdit = () => {
         //todo
     }
     const handleDelete = () => {
         //todo
+    }
+
+    const classes = popOverStyles();
+
+    const handlePopoverOpen = (event, url) => {
+        dispatch(popOverOpen(event.currentTarget, url))
+    };
+
+    const handlePopoverClose = () => {
+        dispatch(popOverClose())
+    };
+
+    const newCardForm = () => {
+        alert("Create ArticleListItem Component")
     }
 
     // Table options
@@ -65,8 +78,10 @@ export default function StockComponent() {
     const columns = [
         {
             title: "Bild", field: "imageurl", render: rowData => {
-                return <img src={rowData.article.product.imageUrl}
-                 style={{width: 50, borderRadius: '10%'}}/>
+                return <img src={rowData.article.product.imageUrl} onMouseEnter={event => {
+                    handlePopoverOpen(event, rowData.article.product.imageUrl)
+                }} onMouseLeave={handlePopoverClose}
+                            style={{width: 50, borderRadius: '10%'}}/>
             }
         },
         {
@@ -129,14 +144,37 @@ export default function StockComponent() {
 
     return (
         <div>
-            <MaterialTable
-                options={options}
-                columns={columns}
-                data={articles}
-                icons={icons}
-                actions={actions}
-                title="My Stock"
-            />
+            {loading ? <LoadingSpinner/> :
+                <MaterialTable
+                    options={options}
+                    columns={columns}
+                    data={articles}
+                    icons={icons}
+                    actions={actions}
+                    title="Sorter Results"
+                />
+            }
+            <Popover
+                id="mouse-over-popover"
+                className={classes.popover}
+                classes={{
+                    paper: classes.paper,
+                }}
+                open={open}
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                onClose={handlePopoverClose}
+                disableRestoreFocus
+            >
+                <img src={popOverImage}/>
+            </Popover>
         </div>
 
     )
