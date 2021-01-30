@@ -8,18 +8,25 @@ import {
     LOAD_ARTICLES_FAILURE,
     LOAD_ARTICLES_REQUEST,
     LOAD_ARTICLES_SUCCESS,
+    LOAD_CSV_FAILURE,
+    LOAD_CSV_REQUEST,
+    LOAD_CSV_SUCCESS,
     LOAD_PRODUCTS_FAILURE,
     LOAD_PRODUCTS_REQUEST,
     LOAD_PRODUCTS_SUCCESS,
     MERGE_PRODUCTS_FAILURE,
     MERGE_PRODUCTS_REQUEST,
-    MERGE_PRODUCTS_SUCCESS
+    MERGE_PRODUCTS_SUCCESS,
+    POST_ARTICLES_FAILURE,
+    POST_ARTICLES_REQUEST,
+    POST_ARTICLES_SUCCESS
 } from "../../constants/action-types";
 
 const initialState = {
     account: false,
     products: false,
-    stock: false
+    stock: false,
+    upload: false
 };
 
 function loadingReducer(state = initialState, action) {
@@ -61,10 +68,33 @@ function loadingReducer(state = initialState, action) {
         case LOAD_ARTICLES_FAILURE:
             return {
                 ...state,
-                stock: false
+                stock: false,
+            }
+        case POST_ARTICLES_REQUEST:
+            return {
+                ...state,
+                stock: true,
+                upload: true
+            }
+        case POST_ARTICLES_SUCCESS:
+        case POST_ARTICLES_FAILURE:
+            return {
+                ...state,
+                stock: false,
+                upload: false
+            }
+        case LOAD_CSV_REQUEST:
+            return {
+                ...state,
+                upload: true
+            }
+        case LOAD_CSV_SUCCESS:
+        case LOAD_CSV_FAILURE:
+            return {
+                ...state,
+                upload: false
             }
         default:
-            console.log("Unknown Action: " + action.type)
             return state
     }
 }

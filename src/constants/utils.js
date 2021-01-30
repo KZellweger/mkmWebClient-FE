@@ -1,14 +1,20 @@
 import {makeStyles} from "@material-ui/core/styles";
 import {
-    AddBox, ArrowDownward,
-    Check, ChevronLeft,
+    AddBox,
+    ArrowDownward,
+    Check,
+    ChevronLeft,
     ChevronRight,
     Clear,
     DeleteOutline,
     Edit,
     FilterList,
-    FirstPage, LastPage, Remove,
-    SaveAlt, Search, ViewColumn
+    FirstPage,
+    LastPage,
+    Remove,
+    SaveAlt,
+    Search,
+    ViewColumn
 } from "@material-ui/icons";
 import React, {forwardRef} from "react";
 

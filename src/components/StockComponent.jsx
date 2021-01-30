@@ -1,24 +1,7 @@
 import {Popover, Typography} from "@material-ui/core";
-import {
-    AddBox,
-    ArrowDownward,
-    Check,
-    ChevronLeft,
-    ChevronRight,
-    Clear,
-    Delete,
-    DeleteOutline,
-    Edit,
-    FilterList,
-    FirstPage,
-    LastPage,
-    Remove,
-    SaveAlt,
-    Search,
-    ViewColumn
-} from "@material-ui/icons";
+import {Delete, Edit} from "@material-ui/icons";
 import MaterialTable from "material-table";
-import React, {forwardRef, useEffect} from "react";
+import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {popOverClose, popOverOpen} from "../actions/commonActions";
 import {getArticles} from "../actions/stockActions";

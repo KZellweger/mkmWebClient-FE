@@ -36,7 +36,6 @@ export function addAccount(data) {
 
 // Async Actions
 
-
 export const getAccount = () => {
     return (dispatch) => {
         dispatch({type: LOAD_ACCOUNT_REQUEST})

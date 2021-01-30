@@ -4,14 +4,13 @@
  * TODO: Maybe create own files per Domain. Gets pretty noisy here soon.
  */
 
-// Stock Actions
+// ################# Stock Actions #################
 
 /**
  * Add a {@link https://api.cardmarket.com/ws/documentation/API_2.0:Entities:Article} to the Redux Store.
  * @type {string}
  */
 export const ADD_ARTICLE = "ADD_ARTICLE"
-
 
 /**
  * Request the Articles from the Backend-API which are stored in the Local Databse
@@ -30,8 +29,68 @@ export const LOAD_ARTICLES_SUCCESS = "LOAD_ARTICLES_SUCCESS"
  */
 export const LOAD_ARTICLES_FAILURE = "LOAD_ARTICLES_FAILURE"
 
+/**
+ * Post a <strong>new<strong/>List of Articles to MKM.
+ * @type {string}
+ */
+export const POST_ARTICLES_REQUEST = "POST_ARTICLES_REQUEST"
 
-//Account Actions
+/**
+ * Indicate Successful request
+ * @type {string}
+ */
+export const POST_ARTICLES_SUCCESS = "POST_ARTICLES_SUCCESS"
+/**
+ * Indicate failed request
+ * @type {string}
+ */
+export const POST_ARTICLES_FAILURE = "POST_ARTICLES_FAILURE"
+
+/**
+ * Post an updated list of <strong>existing<strong/> Articles to MKM.
+ * @type {string}
+ */
+export const UPDATE_ARTICLES_REQUEST = "UPDATE_ARTICLES_REQUEST"
+
+/**
+ * Indicate Successful request
+ * @type {string}
+ */
+export const UPDATE_ARTICLES_SUCCESS = "UPDATE_ARTICLES_SUCCESS"
+/**
+ * Indicate failed request
+ * @type {string}
+ */
+export const UPDATE_ARTICLES_FAILURE = "UPDATE_ARTICLES_FAILURE"
+
+
+// ################# CSV Upload Actions #################
+
+/**
+ * Select CSV File to Upload
+ * @type {string}
+ */
+export const SELECT_CSV = "SELECT_CSV"
+
+/**
+ * Upload CSV File to Backend
+ * @type {string}
+ */
+export const LOAD_CSV_REQUEST = "LOAD_CSV_REQUEST"
+
+/**
+ * Indicate Successful request
+ * @type {string}
+ */
+export const LOAD_CSV_SUCCESS = "LOAD_CSV_SUCCESS"
+
+/**
+ * Indicate failed request
+ * @type {string}
+ */
+export const LOAD_CSV_FAILURE = "LOAD_CSV_FAILURE"
+
+// ################# Account Actions #################
 /**
  * Request Current MKM Account from API
  * @type {string}
@@ -48,7 +107,7 @@ export const LOAD_ACCOUNT_SUCCESS = "LOAD_ACCOUNT_SUCCESS"
  */
 export const LOAD_ACCOUNT_FAILURE = "LOAD_ACCOUNT_FAILURE"
 
-//Data Sync Actions (Handled by Account) TODO: Refactor to own Domain
+// ################# Data Sync Actions (Handled by Account) ################# TODO: Refactor to own Domain
 /**
  * Load Products from MKM
  * @type {string}
@@ -64,7 +123,6 @@ export const LOAD_PRODUCTS_SUCCESS = "LOAD_PRODUCTS_SUCCESS"
  * @type {string}
  */
 export const LOAD_PRODUCTS_FAILURE = "LOAD_PRODUCTS_FAILURE"
-
 
 /**
  * Merge Current Products Database with MKM
@@ -98,7 +156,7 @@ export const DELETE_PRODUCTS_SUCCESS = "MERGE_PRODUCTS_SUCCESS"
  */
 export const DELETE_PRODUCTS_FAILURE = "MERGE_PRODUCTS_FAILURE"
 
-// UI Utils
+// ################# UI Utils #################
 /**
  * Trigger Popover Open
  * @type {string}

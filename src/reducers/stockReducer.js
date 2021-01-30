@@ -17,7 +17,6 @@ function stockReducer(state = initialState, action) {
             return state
 
         default:
-            console.log("Unknown Action: " + action.type)
             return state
     }
 }

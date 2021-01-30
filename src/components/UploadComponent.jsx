@@ -1,109 +1,29 @@
-import {
-    Button,
-    FormControl,
-    FormHelperText,
-    FormLabel,
-    Grid,
-    Input,
-    MenuItem,
-    Popover,
-    Select
-} from "@material-ui/core";
-import {makeStyles} from '@material-ui/core/styles';
-import {
-    AddBox,
-    ArrowDownward,
-    Check,
-    ChevronLeft,
-    ChevronRight,
-    Clear,
-    Delete,
-    DeleteOutline,
-    Edit,
-    FilterList,
-    FirstPage,
-    LastPage,
-    Remove,
-    SaveAlt,
-    Search,
-    ViewColumn
-} from "@material-ui/icons";
-import axios from "axios";
+import {Button, FormControl, FormHelperText, FormLabel, Grid, Input, Popover, Typography} from "@material-ui/core";
+import {Delete, Edit} from "@material-ui/icons";
 import MaterialTable from "material-table";
-import React, {forwardRef, useState} from "react";
-import {CSV_TO_MKM, CSV_UPLOAD, IMAGE_PREFIX} from "../constants/api-endpoints";
-import {TABLE_ICONS} from "../constants/utils";
+import React from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {popOverClose, popOverOpen} from "../actions/commonActions";
+import {postArticles} from "../actions/stockActions";
+import {uploadCSV} from "../actions/uploadActions";
+import {popOverStyles, TABLE_ICONS} from "../constants/utils";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
 export default function UploadComponent() {
-    const [card, setCard] = useState({
-        articleId: 0,
-        languageCode: "en",
-        comment: "",
-        price: 0.00,
-        quantity: 0,
-        inShoppingCart: false,
-        product: {
-            productId: 0,
-            name: "",
-            categoryId: null,
-            categoryName: "",
-            expansionId: null,
-            dateAdded: null,
-            metaproductId: 0,
-            totalReprints: 0,
-            localizations: [],
-            selfUrl: "",
-            imageUrl: "",
-            game: "",
-            expansionCollectionNumber: "",
-            rarity: "",
-            expansionName: "",
-            expansion: {
-                id: 0,
-                version: 0,
-                localizations: [],
-                expansionId: 0,
-                name: "",
-                code: "",
-                iconCode: 53,
-                releaseDate: [],
-                game: "MTG"
-            },
-            priceGuide: null
-        },
-        seller: null,
-        lastEdited: [],
-        condition: "",
-        foil: false,
-        signed: false,
-        altered: false,
-        playset: false,
-        firstEdition: false,
-        articlePriceEntity: null
-    },)
-    const [cardList, setCardList] = useState([])
-    const [file, setFile] = useState('')
-    const [loading, setLoading] = useState(false)
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [popImg, setPopImg] = useState('')
+    const cardList = useSelector(state => state.upload)
+    const loading = useSelector(state => state.common.loading.upload)
+    const open = useSelector(state => state.common.popover.open)
+    const anchorEl = useSelector(state => state.common.popover.anchorEl)
+    const popOverImage = useSelector(state => state.common.popover.popOverImage)
+    const dispatch = useDispatch()
+
     const handleFileChange = (event) => {
         const file = event.target.files[0]
-        setFile(file)
+        dispatch(uploadCSV(file))
     }
 
-    const uploadFile = () => {
-        const formData = new FormData()
-        formData.append('file', file)
-        setLoading(true)
-        axios.post(CSV_UPLOAD, formData, {}).then(res => {
-            setLoading(false)
-            console.log(res.data)
-            setCardList(res.data);
-        }).catch(err => {
-            setLoading(false)
-            console.log(err)
-        })
+    const handlePost = () => {
+        dispatch(postArticles(cardList))
     }
 
     const handleEdit = () => {
@@ -113,16 +33,16 @@ export default function UploadComponent() {
         //todo
     }
 
-    const handlePost = () => {
-        setLoading(true)
-        axios.post(CSV_TO_MKM, cardList, {}).then(res => {
-            setLoading(false)
-            console.log(res.data)
-        }).catch(err => {
-            setLoading(false)
-            console.log(err)
-        })
-    }
+    const classes = popOverStyles();
+
+    const handlePopoverOpen = (event, url) => {
+        dispatch(popOverOpen(event.currentTarget, url))
+    };
+
+    const handlePopoverClose = () => {
+        dispatch(popOverClose())
+    };
+
 
     // Table options
     const options = {
@@ -142,81 +62,55 @@ export default function UploadComponent() {
         }
     ];
 
-    const useStyles = makeStyles((theme) => ({
-        popover: {
-            pointerEvents: 'none',
-        },
-        paper: {
-            padding: theme.spacing(1),
-        }
-    }));
-
-    const classes = useStyles();
-
-    const handlePopoverOpen = (event, url) => {
-        setAnchorEl(event.currentTarget);
-        setPopImg(url.replace(".", IMAGE_PREFIX))
-    };
-
-    const handlePopoverClose = () => {
-        setAnchorEl(null);
-    };
 
     const newCardForm = () => {
         alert("Create ArticleListItem Component")
     }
 
-    const open = Boolean(anchorEl);
 
     const columns = [
         {
             title: "Bild", field: "imageurl", render: rowData => {
-                return <img src={rowData.product.imageUrl.replace(".", IMAGE_PREFIX)} onMouseEnter={event => {
-                    handlePopoverOpen(event, rowData.product.imageUrl)
-                }} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}}/>
+                return <img src={rowData.article.product.imageUrl} onMouseEnter={event => {
+                    handlePopoverOpen(event, rowData.article.product.imageUrl)
+                }} onMouseLeave={handlePopoverClose}
+                            style={{width: 50, borderRadius: '10%'}}/>
             }
         },
         {
             title: "EN-Name", field: "name", render: rowData => {
-                return <p>{rowData.product.name}</p>
+                return <Typography>{rowData.article.product.name}</Typography>
             }
         },
         {
             title: "Set Title", field: "expansionName", render: rowData => {
-                return <p>{rowData.product != null ? rowData.product.expansionName : "unknown"}</p>
+                return <Typography>{rowData.article.product.expansionName}</Typography>
             }
         },
-        {
-            title: "Sprache", field: "language", render: rowData => {
-                return <Select
-                    value='en'>{rowData.product.localizations !== null ? rowData.product.localizations.map(locale =>
-                        <MenuItem value={locale['language']}>{locale['productName']}</MenuItem>) :
-                    <MenuItem value="en">"Unknown"</MenuItem>}</Select>
-            }
-        },
+        //{title: "Sprache", field: "language", render: rowData => {return <Select value='en'>{rowData.article.article.product.localizations !== null ?  rowData.article.article.product.localizations.map(locale => <MenuItem value={locale['language']}>{locale['productName']}</MenuItem>) : <MenuItem value="en">"Unknown"</MenuItem>}</Select>}},
         {
             title: "Rarity", field: "rarity", render: rowData => {
-                return <p>{rowData.product != null ? rowData.product.rarity : ""}</p>
+                return <Typography>{rowData.article.product.rarity}</Typography>
             }
         },
         {
             title: "Condition", field: "condition", render: rowData => {
-                return <p>{rowData.condition}</p>
+                return <Typography>{rowData.article.condition}</Typography>
             }
         },
         {
             title: "Anzahl", field: "quantity", render: rowData => {
-                return <p>{rowData.quantity}</p>
+                return <p>{rowData.article.quantity}</p>
             }
         },
         {
             title: "Preis", field: "price", render: rowData => {
-                return <p>{rowData.price}</p>
+                return <p>{rowData.article.price}</p>
             }
         },
         {
-            title: "Hinzugefügt", field: "dateAdded", render: rowData => {
-                return <p>{rowData.lastEdited}</p>
+            title: "Letzte Änderung", field: "lastEdited", render: rowData => {
+                return <p>{rowData.article.lastEdited}</p>
             }
         }
     ]
@@ -237,12 +131,6 @@ export default function UploadComponent() {
                             Entry</Button>
                     </Grid>
                     <Grid item xs={6}>
-                        <FormControl>
-                            <Button id='submit' onClick={uploadFile} color='primary' variant='contained'>Upload
-                                CSV</Button>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
                         <Button id='postCards' color='primary' variant='contained' onClick={handlePost}>Upload Table to
                             MKM</Button>
                     </Grid>
@@ -250,14 +138,16 @@ export default function UploadComponent() {
             </Grid>
             <hr/>
             {loading ? <LoadingSpinner/> :
-                <MaterialTable
-                    options={options}
-                    columns={columns}
-                    data={cardList}
-                    icons={TABLE_ICONS}
-                    actions={actions}
-                    title="Sorter Results"
-                />
+                cardList.length > 0 ?
+                    <MaterialTable
+                        options={options}
+                        columns={columns}
+                        data={cardList}
+                        icons={TABLE_ICONS}
+                        actions={actions}
+                        title="Sorter Results"
+                    />
+                    : <h3>No Cards Uploaded yet</h3>
             }
             <Popover
                 id="mouse-over-popover"
@@ -278,7 +168,7 @@ export default function UploadComponent() {
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <img src={popImg}/>
+                <img src={popOverImage}/>
             </Popover>
         </div>
 
