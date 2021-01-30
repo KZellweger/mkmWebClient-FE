@@ -1,66 +1,24 @@
-import React, {forwardRef, useEffect, useState} from "react";
-import axios from "axios";
-import Article from "./models/Article";
-import Product from "./models/Product";
-import Expansion from "./models/Expansion";
-import {
-    AddBox,
-    ArrowDownward,
-    Check,
-    ChevronLeft,
-    ChevronRight,
-    Clear,
-    Delete,
-    DeleteOutline,
-    Edit,
-    FilterList,
-    FirstPage,
-    LastPage,
-    Remove,
-    SaveAlt,
-    Search,
-    ViewColumn
-} from "@material-ui/icons";
-import {makeStyles} from "@material-ui/core/styles";
 import {Popover, Typography} from "@material-ui/core";
+import {Delete, Edit} from "@material-ui/icons";
 import MaterialTable from "material-table";
-
-const STOCK_CONTROLLER_URL = 'http://localhost:8081/stock'
-const ARTICLES_ENDPOINT = '/articles'
-const POST_CARDS_ENDPOINT = '/tomkm'
-
-const useStyles = makeStyles((theme) => ({
-    popover: {
-        pointerEvents: 'none',
-    },
-    paper: {
-        padding: theme.spacing(1),
-    }
-}));
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {popOverClose, popOverOpen} from "../actions/commonActions";
+import {getArticles} from "../actions/stockActions";
+import {popOverStyles, TABLE_ICONS} from "../constants/utils";
+import LoadingSpinner from "../utils/LoadingSpinner";
 
 
 export default function StockComponent() {
-    const [data, setData] = useState([])
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [popImg, setPopImg] = useState('')
-    const classes = useStyles();
-
+    const articles = useSelector(state => state.stock)
+    const loading = useSelector(state => state.common.loading.stock)
+    const open = useSelector(state => state.common.popover.open)
+    const anchorEl = useSelector(state => state.common.popover.anchorEl)
+    const popOverImage = useSelector(state => state.common.popover.popOverImage)
+    const dispatch = useDispatch()
     useEffect(() => {
-        axios.get(STOCK_CONTROLLER_URL + ARTICLES_ENDPOINT)
-            .then(result => {
-                //console.log(result.data)
-                result.data.map(card => {
-                    const article = new Article(card)
-                    const product = new Product(card.product)
-                    const expansion = new Expansion(card.product.expansion)
-                    setData(data => [...data, {article: article, product: product, expansion: expansion}])
-                })
-            })
-            .then(() => console.log(data)
-            )
-            .catch(error => console.log(error))
+        dispatch(getArticles())
     }, [])
-
     const handleEdit = () => {
         //todo
     }
@@ -68,16 +26,19 @@ export default function StockComponent() {
         //todo
     }
 
+    const classes = popOverStyles();
+
     const handlePopoverOpen = (event, url) => {
-        setAnchorEl(event.currentTarget);
-        setPopImg(url)
+        dispatch(popOverOpen(event.currentTarget, url))
     };
 
     const handlePopoverClose = () => {
-        setAnchorEl(null);
+        dispatch(popOverClose())
     };
 
-    const open = Boolean(anchorEl);
+    const newCardForm = () => {
+        alert("Create ArticleListItem Component")
+    }
 
     // Table options
     const options = {
@@ -100,79 +61,62 @@ export default function StockComponent() {
     const columns = [
         {
             title: "Bild", field: "imageurl", render: rowData => {
-                return <img src={rowData.product.getImageURL()} onMouseEnter={event => {
-                    handlePopoverOpen(event, rowData.product.getImageURL())
-                }} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}}/>
+                return <img src={rowData.article.product.imageUrl} onMouseEnter={event => {
+                    handlePopoverOpen(event, rowData.article.product.imageUrl)
+                }} onMouseLeave={handlePopoverClose}
+                            style={{width: 50, borderRadius: '10%'}}/>
             }
         },
         {
             title: "EN-Name", field: "name", render: rowData => {
-                return <Typography>{rowData.product.getName()}</Typography>
+                return <Typography>{rowData.article.product.name}</Typography>
             }
         },
         {
             title: "Set Title", field: "expansionName", render: rowData => {
-                return <Typography>{rowData.product.getExpansionName()}</Typography>
+                return <Typography>{rowData.article.product.expansionName}</Typography>
             }
         },
-        //{title: "Sprache", field: "language", render: rowData => {return <Select value='en'>{rowData.product.localizations !== null ?  rowData.product.localizations.map(locale => <MenuItem value={locale['language']}>{locale['productName']}</MenuItem>) : <MenuItem value="en">"Unknown"</MenuItem>}</Select>}},
+        //{title: "Sprache", field: "language", render: rowData => {return <Select value='en'>{rowData.article.article.product.localizations !== null ?  rowData.article.article.product.localizations.map(locale => <MenuItem value={locale['language']}>{locale['productName']}</MenuItem>) : <MenuItem value="en">"Unknown"</MenuItem>}</Select>}},
         {
             title: "Rarity", field: "rarity", render: rowData => {
-                return <Typography>{rowData.product.getRarity()}</Typography>
+                return <Typography>{rowData.article.product.rarity}</Typography>
             }
         },
         {
             title: "Condition", field: "condition", render: rowData => {
-                return <Typography>{rowData.article.getCondition()}</Typography>
+                return <Typography>{rowData.article.condition}</Typography>
             }
         },
         {
             title: "Anzahl", field: "quantity", render: rowData => {
-                return <p>{rowData.article.getQuantity()}</p>
+                return <p>{rowData.article.quantity}</p>
             }
         },
         {
             title: "Preis", field: "price", render: rowData => {
-                return <p>{rowData.article.getPrice()}</p>
+                return <p>{rowData.article.price}</p>
             }
         },
         {
             title: "Letzte Änderung", field: "lastEdited", render: rowData => {
-                return <p>{rowData.article.getLastEdited()}</p>
+                return <p>{rowData.article.lastEdited}</p>
             }
         }
     ]
 
-    const icons = {
-        Add: forwardRef((props, ref) => <AddBox {...props} ref={ref}/>),
-        Check: forwardRef((props, ref) => <Check {...props} ref={ref}/>),
-        Clear: forwardRef((props, ref) => <Clear {...props} ref={ref}/>),
-        Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref}/>),
-        DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref}/>),
-        Edit: forwardRef((props, ref) => <Edit {...props} ref={ref}/>),
-        Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref}/>),
-        Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref}/>),
-        FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref}/>),
-        LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref}/>),
-        NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref}/>),
-        PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref}/>),
-        ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref}/>),
-        Search: forwardRef((props, ref) => <Search {...props} ref={ref}/>),
-        SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref}/>),
-        ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref}/>),
-        ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref}/>)
-    };
-
     return (
         <div>
-            <MaterialTable
-                options={options}
-                columns={columns}
-                data={data}
-                icons={icons}
-                actions={actions}
-                title="My Stock"
-            />
+            {loading ? <LoadingSpinner/> :
+                <MaterialTable
+                    options={options}
+                    columns={columns}
+                    data={articles}
+                    icons={TABLE_ICONS}
+                    actions={actions}
+                    title="Sorter Results"
+                />
+            }
             <Popover
                 id="mouse-over-popover"
                 className={classes.popover}
@@ -192,7 +136,7 @@ export default function StockComponent() {
                 onClose={handlePopoverClose}
                 disableRestoreFocus
             >
-                <img src={popImg}/>
+                <img src={popOverImage}/>
             </Popover>
         </div>
 

@@ -54,7 +54,7 @@ class Article extends ArticleRecord {
 
     getLastEdited() {
         let lastEdited = this.get('lastEdited')
-        return new Date(lastEdited[0],lastEdited[1],lastEdited[2],lastEdited[3],lastEdited[4]).toLocaleDateString()
+        return new Date(lastEdited[0], lastEdited[1], lastEdited[2], lastEdited[3], lastEdited[4]).toLocaleDateString()
     }
 
     getCondition() {
@@ -87,4 +87,5 @@ class Article extends ArticleRecord {
     }
 
 }
+
 export default Article
