@@ -10,6 +10,29 @@ import DataTable from "../utils/DataTable";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
 
+// #### Table Configuration ####
+
+function createHeaderCell(id, numeric, disablePadding, label) {
+    return {id: id, numeric: numeric, disablePadding: disablePadding, label: label};
+}
+
+const header = [
+    createHeaderCell('article.product.imageUrl', false, false, 'Image'),
+    createHeaderCell('article.product.expansionName', false, false, 'Expansion_Name'), //linked with localized name
+    createHeaderCell('article.product.name', false, false, 'Name'), //Selectable -> Localizations
+    createHeaderCell('article.price', true, false, 'Price'), //todo: enhance cell type i guess
+    createHeaderCell('article.quantity', true, false, 'Quantity'),
+    createHeaderCell('article.product.rarity', false, false, 'Rarity'),
+    createHeaderCell('article.condition', false, false, 'Condition'), //Selectable
+    createHeaderCell('article.foil', false, false, 'Foil'),
+    createHeaderCell('article.signed', false, false, 'Signed'),
+    createHeaderCell('article.altered', false, false, 'Altered'),
+    createHeaderCell('article.playset', false, false, 'Playset'),
+    createHeaderCell('article.comment', false, false, 'Comment'),
+    createHeaderCell('article.lastEdited', false, false, 'Last Edited'),
+]
+
+
 export default function StockComponent() {
     const articles = useSelector(state => state.stock)
     const loading = useSelector(state => state.common.loading.stock)
@@ -19,7 +42,7 @@ export default function StockComponent() {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getArticles())
-    }, [])
+    },[])
 
     const handleEdit = () => {
         //todo
@@ -131,7 +154,9 @@ export default function StockComponent() {
                 <img src={popOverImage}/>
             </Popover>
             <div>
-                <DataTable data={articles}/>
+                {loading ? <LoadingSpinner/> :
+                    <DataTable data={articles} header={header}/>}
+
             </div>
         </div>
     )
