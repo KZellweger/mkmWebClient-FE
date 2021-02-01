@@ -5,6 +5,7 @@ import {POPOVER_ClOSE, POPOVER_OPEN} from "../constants/action-types";
  */
 
 export function popOverOpen(target, url) {
+    console.log(target)
     const payload = {
         anchorEl: target,
         popOverImage: url
