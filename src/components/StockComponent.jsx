@@ -5,32 +5,10 @@ import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {popOverClose, popOverOpen} from "../actions/commonActions";
 import {getArticles} from "../actions/stockActions";
-import {popOverStyles, TABLE_ICONS} from "../constants/utils";
-import DataTable from "../utils/DataTable";
+import {CONDITIONS, getCurrencySymbol, popOverStyles, TABLE_ICONS} from "../constants/utils";
+import DataTable, {createHeaderData} from "../utils/DataTable";
 import LoadingSpinner from "../utils/LoadingSpinner";
-
-
-// #### Table Configuration ####
-
-function createHeaderCell(id, numeric, disablePadding, label) {
-    return {id: id, numeric: numeric, disablePadding: disablePadding, label: label};
-}
-
-const header = [
-    createHeaderCell('article.product.imageUrl', false, false, 'Image'),
-    createHeaderCell('article.product.expansionName', false, false, 'Expansion_Name'), //linked with localized name
-    createHeaderCell('article.product.name', false, false, 'Name'), //Selectable -> Localizations
-    createHeaderCell('article.price', true, false, 'Price'), //todo: enhance cell type i guess
-    createHeaderCell('article.quantity', true, false, 'Quantity'),
-    createHeaderCell('article.product.rarity', false, false, 'Rarity'),
-    createHeaderCell('article.condition', false, false, 'Condition'), //Selectable
-    createHeaderCell('article.foil', false, false, 'Foil'),
-    createHeaderCell('article.signed', false, false, 'Signed'),
-    createHeaderCell('article.altered', false, false, 'Altered'),
-    createHeaderCell('article.playset', false, false, 'Playset'),
-    createHeaderCell('article.comment', false, false, 'Comment'),
-    createHeaderCell('article.lastEdited', false, false, 'Last Edited'),
-]
+import {cellTypes} from "../utils/TableCells";
 
 
 export default function StockComponent() {
@@ -53,6 +31,10 @@ export default function StockComponent() {
 
     const classes = popOverStyles();
 
+    const newCardForm = () => {
+        alert("Create ArticleListItem Component")
+    }
+
     const handlePopoverOpen = (event, url) => {
         dispatch(popOverOpen(event.currentTarget, url))
     };
@@ -61,29 +43,30 @@ export default function StockComponent() {
         dispatch(popOverClose())
     };
 
-    const newCardForm = () => {
-        alert("Create ArticleListItem Component")
-    }
-
-    // Table options
-    const options = {
-        actionsColumnIndex: -1,
-        sorting: true,
-        filtering: true,
-        search: true
-    };
-
-    const actions = [{
-        icon: Edit,
-        tooltip: 'Edit Item',
-        onClick: (event, rowData) => handleEdit(rowData),
-    },
-        {
-            icon: Delete,
-            tooltip: 'Delete Item',
-            onClick: (event, rowData) => handleDelete(rowData)
-        }
-    ];
+    // #### Table Configuration ####
+    const header = [
+        createHeaderData('article.product.imageUrl', false, false, 'Image',cellTypes.IMAGE,false,{
+            'style':{width: 50, borderRadius: '10%'},
+            'onMouseEnter':handlePopoverOpen,
+            'onMouseLeave':handlePopoverClose
+        }),
+        createHeaderData('article.product.expansionName', false, false, 'Expansion_Name',cellTypes.TEXT,false), //linked with localized name
+        createHeaderData('article.product.name', false, false, 'Name',cellTypes.TEXT,true), //TODO: Selectable -> Localizations
+        createHeaderData('article.price', true, false, 'Price',cellTypes.CURRENCY,true,{
+            'currency':getCurrencySymbol("de-DE","Eur")
+        }),
+        createHeaderData('article.quantity', true, false, 'Quantity',cellTypes.NUMBER,true),
+        createHeaderData('article.product.rarity', false, false, 'Rarity',cellTypes.TEXT,false),
+        createHeaderData('article.condition', false, false, 'Condition',cellTypes.SELECTOR,true,{
+            'selectorOptions':CONDITIONS
+        }), //Selectable
+        createHeaderData('article.foil', false, false, 'Foil',cellTypes.BOOL,true),
+        createHeaderData('article.signed', false, false, 'Signed',cellTypes.BOOL,true),
+        createHeaderData('article.altered', false, false, 'Altered',cellTypes.BOOL,true),
+        createHeaderData('article.playset', false, false, 'Playset',cellTypes.BOOL,true),
+        createHeaderData('article.comment', false, false, 'Comment',cellTypes.TEXT,true),
+        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false),
+    ]
 
     const columns = [
         {
@@ -122,16 +105,12 @@ export default function StockComponent() {
 
     return (
         <div>
-            {loading ? <LoadingSpinner/> :
-                <MaterialTable
-                    options={options}
-                    columns={columns}
+        {loading ? <LoadingSpinner/> :
+                <DataTable
                     data={articles}
-                    icons={TABLE_ICONS}
-                    actions={actions}
-                    title="Sorter Results"
-                />
-            }
+                    header={header}
+                    onMouseEnter={handlePopoverOpen}
+                    onMouseLeave={handlePopoverClose} />}
             <Popover
                 id="mouse-over-popover"
                 className={classes.popover}
@@ -153,11 +132,6 @@ export default function StockComponent() {
             >
                 <img src={popOverImage}/>
             </Popover>
-            <div>
-                {loading ? <LoadingSpinner/> :
-                    <DataTable data={articles} header={header}/>}
-
-            </div>
         </div>
     )
 }

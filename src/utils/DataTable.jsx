@@ -20,6 +20,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import getTableCellChild from "./TableCells";
 
 function descendingComparator(a, b, orderBy) {
     if (getNestedObject(b,orderBy) < getNestedObject(a,orderBy)) {
@@ -57,6 +58,7 @@ function stableSort(array, comparator) {
         throw new Error("Init Table befor data is Propperly loaded. Take care of this!")
     }
 }
+
 function EnhancedTableHead(props) {
     const { headCells, classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
@@ -131,6 +133,10 @@ const useToolbarStyles = makeStyles((theme) => ({
     },
 }));
 
+export function createHeaderData(id, numeric, disablePadding, label, type, editable, elementProperties) {
+    return {id: id, numeric: numeric, disablePadding: disablePadding, label: label,type:type,editable:editable,elementProperties:elementProperties};
+}
+
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
     const { numSelected } = props;
@@ -199,7 +205,7 @@ const useStyles = makeStyles((theme) => ({
 export default function DataTable(props) {
     const classes = useStyles();
     const rows = props.data
-    const headCells = props.header
+    const headerData = props.header
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('');
     const [selected, setSelected] = React.useState([]);
@@ -275,7 +281,7 @@ export default function DataTable(props) {
                         aria-label="enhanced table"
                     >
                         <EnhancedTableHead
-                            headCells = {headCells}
+                            headCells = {headerData}
                             classes={classes}
                             numSelected={selected.length}
                             order={order}
@@ -307,11 +313,25 @@ export default function DataTable(props) {
                                                     inputProps={{ 'aria-labelledby': labelId }}
                                                 />
                                             </TableCell>
-                                            <TableCell component="th" id={labelId} scope="row" padding="none">
-                                                {row.name}
-                                            </TableCell>
-                                            <TableCell align="right">{row.article.product.expansionName}</TableCell>
-                                            <TableCell align="right">{row.article.product.name}</TableCell>
+                                            {headerData.map(config => {
+                                                return <TableCell> {getTableCellChild(config.type,config.editable,getNestedObject(row,config.id),config.elementProperties)} </TableCell>
+                                            })}
+
+                                            {/*<TableCell padding="checkbox">*/}
+                                            {/*    <Checkbox*/}
+                                            {/*        checked={isItemSelected}*/}
+                                            {/*        inputProps={{ 'aria-labelledby': labelId }}*/}
+                                            {/*    />*/}
+                                            {/*</TableCell>*/}
+                                            {/*<TableCell component="th" id={labelId} scope="row" padding="none">*/}
+                                            {/*    <img src={row.article.product.imageUrl} onMouseEnter={event => {*/}
+                                            {/*        props.onMouseEnter(event, row.article.product.imageUrl)*/}
+                                            {/*    }} onMouseLeave={props.onMouseLeave} style={{width: 50, borderRadius: '10%'}}*/}
+                                            {/*    />*/}
+                                            {/*</TableCell>*/}
+                                            {/*<TableCell align="right">{row.article.product.expansionName}</TableCell>*/}
+                                            {/*<TableCell align="right">{row.article.product.name}</TableCell>*/}
+
                                         </TableRow>
                                     );
                                 })}
