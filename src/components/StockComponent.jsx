@@ -1,14 +1,12 @@
 import {Popover, Typography} from "@material-ui/core";
-import {Delete, Edit} from "@material-ui/icons";
-import MaterialTable from "material-table";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {popOverClose, popOverOpen} from "../actions/commonActions";
 import {getArticles} from "../actions/stockActions";
 import {CONDITIONS, getCurrencySymbol, popOverStyles, TABLE_ICONS} from "../constants/utils";
-import DataTable, {createHeaderData} from "../utils/DataTable";
+import DataTable, {createHeaderData} from "../utils/dataTable/DataTable";
 import LoadingSpinner from "../utils/LoadingSpinner";
-import {cellTypes} from "../utils/TableCells";
+import {cellTypes} from "../utils/dataTable/TableCells";
 
 
 export default function StockComponent() {
@@ -48,24 +46,27 @@ export default function StockComponent() {
         createHeaderData('article.product.imageUrl', false, false, 'Image',cellTypes.IMAGE,false,{
             'style':{width: 50, borderRadius: '10%'},
             'onMouseEnter':handlePopoverOpen,
-            'onMouseLeave':handlePopoverClose
+            'onMouseLeave':handlePopoverClose,
         }),
-        createHeaderData('article.product.expansionName', false, false, 'Expansion_Name',cellTypes.TEXT,false), //linked with localized name
-        createHeaderData('article.product.name', false, false, 'Name',cellTypes.TEXT,true), //TODO: Selectable -> Localizations
+        createHeaderData('article.product.expansionName', false, false, 'Expansion_Name',cellTypes.TEXT,false, {}), //linked with localized name
+        createHeaderData('article.product.name', false, false, 'Name',cellTypes.TEXT,true,{}), //TODO: Selectable -> Localizations
         createHeaderData('article.price', true, false, 'Price',cellTypes.CURRENCY,true,{
+            'style':{width: 50},
             'currency':getCurrencySymbol("de-DE","Eur")
         }),
-        createHeaderData('article.quantity', true, false, 'Quantity',cellTypes.NUMBER,true),
-        createHeaderData('article.product.rarity', false, false, 'Rarity',cellTypes.TEXT,false),
+        createHeaderData('article.quantity', true, false, 'Quantity',cellTypes.NUMBER,true,{
+            'style':{width: 50}
+        }),
+        createHeaderData('article.product.rarity', false, false, 'Rarity',cellTypes.TEXT,false,{}),
         createHeaderData('article.condition', false, false, 'Condition',cellTypes.SELECTOR,true,{
             'selectorOptions':CONDITIONS
         }), //Selectable
-        createHeaderData('article.foil', false, false, 'Foil',cellTypes.BOOL,true),
-        createHeaderData('article.signed', false, false, 'Signed',cellTypes.BOOL,true),
-        createHeaderData('article.altered', false, false, 'Altered',cellTypes.BOOL,true),
-        createHeaderData('article.playset', false, false, 'Playset',cellTypes.BOOL,true),
-        createHeaderData('article.comment', false, false, 'Comment',cellTypes.TEXT,true),
-        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false),
+        createHeaderData('article.foil', false, false, 'Foil',cellTypes.BOOL,true,{}),
+        createHeaderData('article.signed', false, false, 'Signed',cellTypes.BOOL,true,{}),
+        createHeaderData('article.altered', false, false, 'Altered',cellTypes.BOOL,true,{}),
+        createHeaderData('article.playset', false, false, 'Playset',cellTypes.BOOL,true,{}),
+        createHeaderData('article.comment', false, false, 'Comment',cellTypes.TEXT,true,{}),
+        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false,{}),
     ]
 
     const columns = [
