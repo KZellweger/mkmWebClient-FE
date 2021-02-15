@@ -1,4 +1,4 @@
-import {Input, Menu, MenuItem} from "@material-ui/core";
+import {Input, List, ListItem, Menu, MenuItem, Popover} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import {lighten, makeStyles} from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -70,19 +70,22 @@ export default function EnhancedTableToolbar(props) {
                     <DeleteIcon/>
                 </IconButton>
             </Tooltip>
-            <Menu
+            <Popover
                 id='filtermenu'
                 anchorEl={anchorEl}
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
             >
-                {filterWidgets.map((widget) => (
-                    <MenuItem>
-                        {widget}
-                    </MenuItem>
-                ))}
-            </Menu>
+                <List>
+                    {filterWidgets.map((widget) => (
+                        <ListItem>
+                            {widget}
+                        </ListItem>
+                    ))}
+
+                </List>
+            </Popover>
         </Toolbar>
     );
 }

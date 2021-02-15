@@ -2,7 +2,7 @@ import {TextField} from "@material-ui/core";
 import {Label} from "@material-ui/icons";
 import {getNestedObject} from "../utilities";
 import {cellTypes} from "./TableCells";
-
+import React from  "react"
 const getValue = value => (typeof value === 'string' ? value.toUpperCase() : value);
 
 /**
@@ -46,8 +46,11 @@ function createFilterWidgets(tableHeaderData,filterCriterias, onChange) {
 }
 
 function FilterWidget(column, onChange){
+    const [inState,setInState] = React.useState()
 
     const handleChange = (field) => (event) => {
+        setInState(event.target.value)
+
         onChange(field, event.target.value)
     }
 
