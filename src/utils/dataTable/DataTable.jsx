@@ -1,9 +1,7 @@
-import {Menu, MenuItem} from "@material-ui/core";
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
-import {lighten, makeStyles} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -16,10 +14,11 @@ import React from 'react';
 import {getNestedObject} from "../utilities";
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableToolbar from "./EnhancedTableToolbar";
+import {createFilterWidgets, multiPropsFilter} from "./filter";
 import {getComparator, stableSort} from "./sorting";
 import getTableCellChild from "./TableCells";
 
-export function createHeaderData(id, numeric, disablePadding, label, type, editable, elementProperties) {
+export function createHeaderData(id, numeric, disablePadding, label, type, editable, enableFilter, elementProperties) {
     return {
         id: id,
         numeric: numeric,
@@ -27,6 +26,7 @@ export function createHeaderData(id, numeric, disablePadding, label, type, edita
         label: label,
         type: type,
         editable: editable,
+        enableFilter: enableFilter,
         elementProperties: elementProperties
     };
 }
@@ -59,6 +59,7 @@ export default function DataTable(props) {
     const classes = useStyles();
     const rows = props.data
     const headerData = props.header
+    const [filterCriterias, setFilterCriterias] = React.useState({})
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('');
     const [selected, setSelected] = React.useState([]);
@@ -69,6 +70,19 @@ export default function DataTable(props) {
     //     console.log("on load")
     //     console.log(props)
     // })
+    const handleFilterChange = (field, value) => {
+        console.log(field,value)
+        setFilterCriterias(prev => ({
+            ...prev,
+            [field]: value
+        }))
+
+        console.log(filterCriterias)
+
+    }
+
+    const filterWidgets = createFilterWidgets(headerData,filterCriterias, handleFilterChange);
+
     const handleRequestSort = (event, property) => {
         //console.log("handleSort: ", event, property)
         const isAsc = orderBy === property && order === 'asc';
@@ -125,7 +139,11 @@ export default function DataTable(props) {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length}/>
+                <EnhancedTableToolbar
+                    numSelected={selected.length}
+                    filterWidgets = {filterWidgets}
+
+                />
                 <TableContainer>
                     <Table
                         className={classes.table}
@@ -144,7 +162,7 @@ export default function DataTable(props) {
                             rowCount={rows.length}
                         />
                         <TableBody>
-                            {stableSort(rows, getComparator(order, orderBy))
+                            {stableSort(multiPropsFilter(rows,filterCriterias), getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(row.name);

@@ -1,3 +1,4 @@
+import {Input, Menu, MenuItem} from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import {lighten, makeStyles} from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -8,7 +9,6 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import React from "react";
-import FilterMenu from "./FilterMenu";
 
 const useToolbarStyles = makeStyles((theme) => ({
     root: {
@@ -32,11 +32,17 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 export default function EnhancedTableToolbar(props) {
     const classes = useToolbarStyles();
+    const [anchorEl, setAnchorEl] = React.useState(null)
     const {numSelected} = props;
-    const testFilter = [
-        "Some Filter 1",
-        "Some Filter 2"
-    ]
+    const filterWidgets = props.filterWidgets
+    const handleFilterClick = (event) => {
+        setAnchorEl(event.currentTarget)
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
+
     return (
         <Toolbar
             className={clsx(classes.root, {
@@ -52,26 +58,39 @@ export default function EnhancedTableToolbar(props) {
                     My Stock
                 </Typography>
             )}
-
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton aria-label="delete">
-                        <DeleteIcon/>
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton aria-label="filter list">
-                        <FilterListIcon
-                            onClick={(event) => FilterMenu(testFilter,event.currentTarget)}
-                        />
-                    </IconButton>
-                </Tooltip>
-            )}
+            <Tooltip title="Filter list">
+                <IconButton aria-label="filter list">
+                    <FilterListIcon
+                        onClick={handleFilterClick}
+                    />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+                <IconButton aria-label="delete">
+                    <DeleteIcon/>
+                </IconButton>
+            </Tooltip>
+            <Menu
+                id='filtermenu'
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+            >
+                {filterWidgets.map((widget) => (
+                    <MenuItem>
+                        {widget}
+                    </MenuItem>
+                ))}
+            </Menu>
         </Toolbar>
     );
-};
+}
+;
 
-EnhancedTableToolbar.propTypes = {
+EnhancedTableToolbar.propTypes =
+{
     numSelected: PropTypes.number.isRequired,
-};
+    filterWidgets: PropTypes.array.isRequired
+}
+;

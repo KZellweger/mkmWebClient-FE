@@ -43,30 +43,30 @@ export default function StockComponent() {
 
     // #### Table Configuration ####
     const header = [
-        createHeaderData('article.product.imageUrl', false, false, 'Image',cellTypes.IMAGE,false,{
+        createHeaderData('article.product.imageUrl', false, false, 'Image',cellTypes.IMAGE,false,false,{
             'style':{width: 50, borderRadius: '10%'},
             'onMouseEnter':handlePopoverOpen,
             'onMouseLeave':handlePopoverClose,
         }),
-        createHeaderData('article.product.expansionName', false, false, 'Expansion_Name',cellTypes.TEXT,false, {}), //linked with localized name
-        createHeaderData('article.product.name', false, false, 'Name',cellTypes.TEXT,true,{}), //TODO: Selectable -> Localizations
-        createHeaderData('article.price', true, false, 'Price',cellTypes.CURRENCY,true,{
+        createHeaderData('article.product.expansionName', false, false, 'Expansion_Name',cellTypes.TEXT,false, true,{}), //linked with localized name
+        createHeaderData('article.product.name', false, false, 'Name',cellTypes.TEXT,true,true,{}), //TODO: Selectable -> Localizations
+        createHeaderData('article.price', true, false, 'Price',cellTypes.CURRENCY,true,true,{
             'style':{width: 50},
             'currency':getCurrencySymbol("de-DE","Eur")
         }),
-        createHeaderData('article.quantity', true, false, 'Quantity',cellTypes.NUMBER,true,{
+        createHeaderData('article.quantity', true, false, 'Quantity',cellTypes.NUMBER,true,true,{
             'style':{width: 50}
         }),
-        createHeaderData('article.product.rarity', false, false, 'Rarity',cellTypes.TEXT,false,{}),
-        createHeaderData('article.condition', false, false, 'Condition',cellTypes.SELECTOR,true,{
+        createHeaderData('article.product.rarity', false, false, 'Rarity',cellTypes.TEXT,false,true,{}),
+        createHeaderData('article.condition', false, false, 'Condition',cellTypes.SELECTOR,true,true,{
             'selectorOptions':CONDITIONS
         }), //Selectable
-        createHeaderData('article.foil', false, false, 'Foil',cellTypes.BOOL,true,{}),
-        createHeaderData('article.signed', false, false, 'Signed',cellTypes.BOOL,true,{}),
-        createHeaderData('article.altered', false, false, 'Altered',cellTypes.BOOL,true,{}),
-        createHeaderData('article.playset', false, false, 'Playset',cellTypes.BOOL,true,{}),
-        createHeaderData('article.comment', false, false, 'Comment',cellTypes.TEXT,true,{}),
-        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false,{}),
+        createHeaderData('article.foil', false, false, 'Foil',cellTypes.BOOL,true,true,{}),
+        createHeaderData('article.signed', false, false, 'Signed',cellTypes.BOOL,true,true,{}),
+        createHeaderData('article.altered', false, false, 'Altered',cellTypes.BOOL,true,true,{}),
+        createHeaderData('article.playset', false, false, 'Playset',cellTypes.BOOL,true,true,{}),
+        createHeaderData('article.comment', false, false, 'Comment',cellTypes.TEXT,true,true,{}),
+        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false,true,{}),
     ]
 
     const columns = [
