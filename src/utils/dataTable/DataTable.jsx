@@ -11,6 +11,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
 import React from 'react';
+import useDebounce from "../../hooks/debounce.hook";
 import {getNestedObject} from "../utilities";
 import EnhancedTableHead from "./EnhancedTableHead";
 import EnhancedTableToolbar from "./EnhancedTableToolbar";
@@ -59,7 +60,8 @@ export default function DataTable(props) {
     const classes = useStyles();
     const rows = props.data
     const headerData = props.header
-    const [filterCriterias, setFilterCriterias] = React.useState({})
+    const [filterCriteria, setFilterCriteria] = React.useState({})
+    const debouncedFilterCriteria = useDebounce(300, filterCriteria,{})
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('');
     const [selected, setSelected] = React.useState([]);
@@ -72,16 +74,16 @@ export default function DataTable(props) {
     // })
     const handleFilterChange = (field, value) => {
         console.log(field,value)
-        setFilterCriterias(prev => ({
+        setFilterCriteria(prev => ({
             ...prev,
             [field]: value
         }))
 
-        console.log(filterCriterias)
+        console.log(filterCriteria)
 
     }
 
-    const filterWidgets = createFilterWidgets(headerData,filterCriterias, handleFilterChange);
+    const filterWidgets = createFilterWidgets(headerData,filterCriteria, handleFilterChange);
 
     const handleRequestSort = (event, property) => {
         //console.log("handleSort: ", event, property)
@@ -162,10 +164,13 @@ export default function DataTable(props) {
                             rowCount={rows.length}
                         />
                         <TableBody>
-                            {stableSort(multiPropsFilter(rows,filterCriterias), getComparator(order, orderBy))
+                            {/*
+                            TODO: Calculated data via Use Memo Hook (filterded and sorted data) and one Memo for sliced Data (paging)
+                            */}
+                            {stableSort(multiPropsFilter(rows,debouncedFilterCriteria), getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.name);
+                                    const isItemSelected = isSelected(row.article.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
                                     return (
                                         <TableRow
