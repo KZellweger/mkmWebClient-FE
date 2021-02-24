@@ -10,7 +10,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
-import React from 'react';
+import React, {useMemo} from 'react';
 import useDebounce from "../../hooks/debounce.hook";
 import {getNestedObject} from "../utilities";
 import EnhancedTableHead from "./EnhancedTableHead";
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DataTable(props) {
     const classes = useStyles();
-    const rows = props.data
+    const raw_data = props.data
     const headerData = props.header
     const [filterCriteria, setFilterCriteria] = React.useState({})
     const debouncedFilterCriteria = useDebounce(300, filterCriteria,{})
@@ -68,6 +68,8 @@ export default function DataTable(props) {
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(true);
     const [rowsPerPage, setRowsPerPage] = React.useState(25);
+    const filtered_and_sorted_data = useMemo(() => filterAndSortData(raw_data, debouncedFilterCriteria,order,orderBy),[raw_data, debouncedFilterCriteria,order,orderBy])
+    const rows = useMemo(() => paginateData(filtered_and_sorted_data,page,rowsPerPage),[filtered_and_sorted_data,page,rowsPerPage]);
     // useEffect(() => {
     //     console.log("on load")
     //     console.log(props)
@@ -94,7 +96,7 @@ export default function DataTable(props) {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.name);
+            const newSelecteds = raw_data.map((n) => n.name);
             setSelected(newSelecteds);
             return;
         }
@@ -136,7 +138,15 @@ export default function DataTable(props) {
 
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    function filterAndSortData(data, filterCriteria, order, orderBy){
+        return stableSort(multiPropsFilter(data,filterCriteria), getComparator(order, orderBy))
+    }
+
+    function paginateData(data, page, rowsPerPage){
+        return data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+    }
+
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, raw_data.length - page * rowsPerPage);
 
     return (
         <div className={classes.root}>
@@ -161,15 +171,10 @@ export default function DataTable(props) {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
+                            rowCount={raw_data.length}
                         />
                         <TableBody>
-                            {/*
-                            TODO: Calculated data via Use Memo Hook (filterded and sorted data) and one Memo for sliced Data (paging)
-                            */}
-                            {stableSort(multiPropsFilter(rows,debouncedFilterCriteria), getComparator(order, orderBy))
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((row, index) => {
+                            {rows.map((row, index) => {
                                     const isItemSelected = isSelected(row.article.id);
                                     const labelId = `enhanced-table-checkbox-${index}`;
                                     return (
@@ -205,7 +210,7 @@ export default function DataTable(props) {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25, {value: -1, label: 'All'}]}
                     component="div"
-                    count={rows.length}
+                    count={raw_data.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
