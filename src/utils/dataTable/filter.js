@@ -1,4 +1,5 @@
-import {TextField} from "@material-ui/core";
+import {FormLabel, MenuItem, Select, TextField} from "@material-ui/core";
+import Checkbox from "@material-ui/core/Checkbox";
 import {Label} from "@material-ui/icons";
 import React from "react"
 import {getNestedObject} from "../utilities";
@@ -26,16 +27,18 @@ function multiPropsFilter(data, filters) {
                 if (!filters[key].value.length) {
                     return true
                 }
-                return getNestedObject(item,key).includes(filters[key].value) //Only Text Filter yet
+                return getNestedObject(item,key).includes(filters[key].value)
             }else if(filters[key].type === cellTypes.NUMBER){
                 if (!filters[key].min.length && !filters[key].max.length) {
                     return true
                 }
-
                 const num = getNestedObject(item,key)
                 const min = filters[key].min
                 const max = filters[key].max
                 return (min.length && num >= parseFloat(min)) && (!max.length || num <= parseFloat(max))
+            }else if(filters[key].type === cellTypes.BOOL){
+                console.log(key, filters[key].value,getNestedObject(item,key))
+                return filters[key].value === getNestedObject(item,key)
             }
         })
     })
@@ -62,6 +65,15 @@ function FilterWidget(column, onChange) {
         onChange(filterObject)
     }
 
+    const handleBooleanChange = (field) => (event) => {
+        const filterObject = {
+            "type": cellTypes.BOOL,
+            "key": field,
+            "value": event.target.checked
+        }
+        onChange(filterObject)
+    }
+
     const handleNumericChange = (field, boundary) => (event) => {
         if (boundary === 'min') {
             const filterObject = {
@@ -71,7 +83,7 @@ function FilterWidget(column, onChange) {
                 "max": document.getElementById(field + 'MAX').value
             }
             onChange(filterObject)
-        } else if (boundary == 'max') {
+        } else if (boundary === 'max') {
             const filterObject = {
                 "type": cellTypes.NUMBER,
                 "key": field,
@@ -108,9 +120,34 @@ function FilterWidget(column, onChange) {
                     />
                 </div>
             )
+        case cellTypes.BOOL:
+            return (
+                <div>
+                    <FormLabel>{column.label}</FormLabel>
+                    <Checkbox
+                        size='small'
+                        onChange={handleBooleanChange(column.id)}
+                    />
+                </div>
+            )
+        // case cellTypes.SELECTOR:
+        //     return(
+        //     <div>
+        //         <FormLabel>{column.label}</FormLabel>
+        //         <Select
+        //         multiple
+        //         value={[]}
+        //         >
+        //         {column.elementProperties.selectorOptions.map(option => {
+        //             return <MenuItem key={option.value} value={option.value}>
+        //                 {option.label}
+        //             </MenuItem>
+        //         })}</Select>
+        //     </div>
+        //     )
         default:
             return (
-                <Label>Not Implement yet</Label>
+                <FormLabel>Not Implement yet</FormLabel>
             )
     }
 }

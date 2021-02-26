@@ -58,15 +58,15 @@ export default function StockComponent() {
             'style':{width: 50}
         }),
         createHeaderData('article.product.rarity', false, false, 'Rarity',cellTypes.TEXT,false,true,{}),
-        createHeaderData('article.condition', false, false, 'Condition',cellTypes.SELECTOR,true,true,{
+        createHeaderData('article.condition', false, false, 'Condition',cellTypes.SELECTOR,true,false,{
             'selectorOptions':CONDITIONS
         }), //Selectable
         createHeaderData('article.foil', false, false, 'Foil',cellTypes.BOOL,true,true,{}),
         createHeaderData('article.signed', false, false, 'Signed',cellTypes.BOOL,true,true,{}),
         createHeaderData('article.altered', false, false, 'Altered',cellTypes.BOOL,true,true,{}),
         createHeaderData('article.playset', false, false, 'Playset',cellTypes.BOOL,true,true,{}),
-        createHeaderData('article.comment', false, false, 'Comment',cellTypes.TEXT,true,true,{}),
-        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false,true,{}),
+        createHeaderData('article.comment', false, false, 'Comment',cellTypes.TEXT,true,false,{}),
+        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false,false,{}),
     ]
 
     const columns = [
