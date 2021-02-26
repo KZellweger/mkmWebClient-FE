@@ -1,4 +1,4 @@
-import {TextField} from "@material-ui/core";
+import {Input, TextField} from "@material-ui/core";
 import {Label} from "@material-ui/icons";
 import {getNestedObject} from "../utilities";
 import {cellTypes} from "./TableCells";
@@ -14,6 +14,8 @@ const getValue = value => (typeof value === 'string' ? value.toUpperCase() : val
  * @returns {Array} Result Array
  */
 function multiPropsFilter(data, filters) {
+    console.log("Filter Objects: ")
+    console.log(filters)
     const filterKeys = Object.keys(filters)
     console.log(filterKeys)
     return data.filter(item => {
@@ -22,7 +24,7 @@ function multiPropsFilter(data, filters) {
             if (!filters[key].length) {
                 return true
             }
-            console.log(item,key,getNestedObject(item,key))
+            //console.log(item,key,getNestedObject(item,key))
             // if(item[key].includes(filters[key])){
             //     console.log(item)
             //     return item
@@ -31,8 +33,6 @@ function multiPropsFilter(data, filters) {
         })
     })
 }
-
-
 
 function createFilterWidgets(tableHeaderData,filterCriterias, onChange) {
     const widgets = []
@@ -46,12 +46,23 @@ function createFilterWidgets(tableHeaderData,filterCriterias, onChange) {
 }
 
 function FilterWidget(column, onChange){
-    const [inState,setInState] = React.useState()
-
     const handleChange = (field) => (event) => {
-        setInState(event.target.value)
+        const filterObject = {
+            "type":cellTypes.TEXT,
+            "key":field,
+            "value":event.target.value
+        }
+        onChange(filterObject)
+    }
 
-        onChange(field, event.target.value)
+    const handleNumericChange = (field, boundary) => (event) => {
+        const filterObject = {
+            "type":cellTypes.NUMBER,
+            "key":field,
+            "boundary":boundary,
+            "value":event.target.value
+        }
+        onChange(filterObject)
     }
 
     switch (column.type){
@@ -61,6 +72,22 @@ function FilterWidget(column, onChange){
                     label={column.label}
                     onChange={handleChange(column.id)}
                 />
+            )
+        case cellTypes.CURRENCY:
+        case cellTypes.NUMBER:
+            return (
+                <div>
+                    <TextField
+                        type='number'
+                        label={'Min: ' + column.label}
+                        onChange={handleNumericChange(column.id,"min")}
+                    />
+                    <TextField
+                        type='number'
+                        label={'Max: ' + column.label}
+                        onChange={handleNumericChange(column.id,"max")}
+                    />
+                </div>
             )
         default:
             return (

@@ -74,15 +74,13 @@ export default function DataTable(props) {
     //     console.log("on load")
     //     console.log(props)
     // })
-    const handleFilterChange = (field, value) => {
-        console.log(field,value)
+    const handleFilterChange = (filterObject) => {
+        //console.log(filterObject)
         setFilterCriteria(prev => ({
             ...prev,
-            [field]: value
+            [filterObject.key]: filterObject
         }))
-
-        console.log(filterCriteria)
-
+        //console.log(filterCriteria)
     }
 
     const filterWidgets = createFilterWidgets(headerData,filterCriteria, handleFilterChange);
