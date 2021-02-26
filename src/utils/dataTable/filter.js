@@ -1,8 +1,9 @@
-import {Input, TextField} from "@material-ui/core";
+import {TextField} from "@material-ui/core";
 import {Label} from "@material-ui/icons";
+import React from "react"
 import {getNestedObject} from "../utilities";
 import {cellTypes} from "./TableCells";
-import React from  "react"
+
 const getValue = value => (typeof value === 'string' ? value.toUpperCase() : value);
 
 /**
@@ -20,52 +21,68 @@ function multiPropsFilter(data, filters) {
     console.log(filterKeys)
     return data.filter(item => {
         return filterKeys.every(key => {
-            //ignore an empty filter
-            if (!filters[key].length) {
-                return true
+            if(filters[key].type === cellTypes.TEXT){
+                //Ignore an empty filter
+                if (!filters[key].value.length) {
+                    return true
+                }
+                return getNestedObject(item,key).includes(filters[key].value) //Only Text Filter yet
+            }else if(filters[key].type === cellTypes.NUMBER){
+                if (!filters[key].min.length && !filters[key].max.length) {
+                    return true
+                }
+
+                const num = getNestedObject(item,key)
+                const min = filters[key].min
+                const max = filters[key].max
+                return (min.length && num >= parseFloat(min)) && (!max.length || num <= parseFloat(max))
             }
-            //console.log(item,key,getNestedObject(item,key))
-            // if(item[key].includes(filters[key])){
-            //     console.log(item)
-            //     return item
-            // }
-            return getNestedObject(item,key).includes(filters[key]) //Only Text Filter yet
         })
     })
 }
 
-function createFilterWidgets(tableHeaderData,filterCriterias, onChange) {
+function createFilterWidgets(tableHeaderData, filterCriterias, onChange) {
     const widgets = []
     tableHeaderData.map((column) => {
             if (column.enableFilter) {
-                widgets.push(FilterWidget(column,onChange))
+                widgets.push(FilterWidget(column, onChange))
             }
         }
     )
     return widgets
 }
 
-function FilterWidget(column, onChange){
+function FilterWidget(column, onChange) {
     const handleChange = (field) => (event) => {
         const filterObject = {
-            "type":cellTypes.TEXT,
-            "key":field,
-            "value":event.target.value
+            "type": cellTypes.TEXT,
+            "key": field,
+            "value": event.target.value
         }
         onChange(filterObject)
     }
 
     const handleNumericChange = (field, boundary) => (event) => {
-        const filterObject = {
-            "type":cellTypes.NUMBER,
-            "key":field,
-            "boundary":boundary,
-            "value":event.target.value
+        if (boundary === 'min') {
+            const filterObject = {
+                "type": cellTypes.NUMBER,
+                "key": field,
+                "min": event.target.value,
+                "max": document.getElementById(field + 'MAX').value
+            }
+            onChange(filterObject)
+        } else if (boundary == 'max') {
+            const filterObject = {
+                "type": cellTypes.NUMBER,
+                "key": field,
+                "min": document.getElementById(field + 'MIN').value,
+                "max": event.target.value
+            }
+            onChange(filterObject)
         }
-        onChange(filterObject)
     }
 
-    switch (column.type){
+    switch (column.type) {
         case cellTypes.TEXT:
             return (
                 <TextField
@@ -78,14 +95,16 @@ function FilterWidget(column, onChange){
             return (
                 <div>
                     <TextField
+                        id={column.id + 'MIN'}
                         type='number'
                         label={'Min: ' + column.label}
-                        onChange={handleNumericChange(column.id,"min")}
+                        onChange={handleNumericChange(column.id, "min")}
                     />
                     <TextField
+                        id={column.id + 'MAX'}
                         type='number'
                         label={'Max: ' + column.label}
-                        onChange={handleNumericChange(column.id,"max")}
+                        onChange={handleNumericChange(column.id, "max")}
                     />
                 </div>
             )
