@@ -55,3 +55,48 @@ export const TABLE_ICONS = {
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref}/>),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref}/>)
 };
+
+export const getCurrencySymbol = (locale, currency) => (0).toLocaleString(locale, {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+}).replace(/\d/g, '').trim()
+
+export const CONDITIONS = [
+    {
+        value: 'MINT',
+        label: 'Mint'
+    },
+    {
+        value: 'NEAR_MINT',
+        label: 'Near Mint'
+    },
+    {
+        value: 'EXCELLENT',
+        label: 'Excellent'
+    },
+    {
+        value: 'GOOD',
+        label: 'Good'
+    },
+    {
+        value: 'LIGHT_PLAYED',
+        label: 'Light Played'
+    },
+    {
+        value: 'PLAYED',
+        label: 'Played'
+    },
+    {
+        value: 'POOR',
+        label: 'Poor'
+    }
+]
+
+export const RARITY = {
+    COMMON: "common",
+    UNCOMMON: "uncommon",
+    RARE: "rare",
+    MYTHIC: "mythicrare"
+}

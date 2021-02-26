@@ -3,6 +3,7 @@ import {Button, Col, Container, Row} from "react-bootstrap";
 import Table from 'react-bootstrap/Table'
 import {useDispatch, useSelector} from "react-redux"
 import {deleteProductDB, getAccount, readProductsFromMkm, updateProductsDB} from "../actions/accountActions";
+import DataTable from "../utils/dataTable/DataTable";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
 

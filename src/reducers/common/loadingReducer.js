@@ -23,10 +23,10 @@ import {
 } from "../../constants/action-types";
 
 const initialState = {
-    account: false,
-    products: false,
-    stock: false,
-    upload: false
+    account: true,
+    products: true,
+    stock: true,
+    upload: true
 };
 
 function loadingReducer(state = initialState, action) {

@@ -1,12 +1,12 @@
 import {Popover, Typography} from "@material-ui/core";
-import {Delete, Edit} from "@material-ui/icons";
-import MaterialTable from "material-table";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {popOverClose, popOverOpen} from "../actions/commonActions";
 import {getArticles} from "../actions/stockActions";
-import {popOverStyles, TABLE_ICONS} from "../constants/utils";
+import {CONDITIONS, getCurrencySymbol, popOverStyles, TABLE_ICONS} from "../constants/utils";
+import DataTable, {createHeaderData} from "../utils/dataTable/DataTable";
 import LoadingSpinner from "../utils/LoadingSpinner";
+import {cellTypes} from "../utils/dataTable/TableCells";
 
 
 export default function StockComponent() {
@@ -18,7 +18,8 @@ export default function StockComponent() {
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getArticles())
-    }, [])
+    },[])
+
     const handleEdit = () => {
         //todo
     }
@@ -28,6 +29,10 @@ export default function StockComponent() {
 
     const classes = popOverStyles();
 
+    const newCardForm = () => {
+        alert("Create ArticleListItem Component")
+    }
+
     const handlePopoverOpen = (event, url) => {
         dispatch(popOverOpen(event.currentTarget, url))
     };
@@ -36,87 +41,77 @@ export default function StockComponent() {
         dispatch(popOverClose())
     };
 
-    const newCardForm = () => {
-        alert("Create ArticleListItem Component")
-    }
-
-    // Table options
-    const options = {
-        actionsColumnIndex: -1,
-        sorting: true
-    };
-
-    const actions = [{
-        icon: Edit,
-        tooltip: 'Edit Item',
-        onClick: (event, rowData) => handleEdit(rowData),
-    },
-        {
-            icon: Delete,
-            tooltip: 'Delete Item',
-            onClick: (event, rowData) => handleDelete(rowData)
-        }
-    ];
+    // #### Table Configuration ####
+    const header = [
+        createHeaderData('article.product.imageUrl', false, false, 'Image',cellTypes.IMAGE,false,false,{
+            'style':{width: 50, borderRadius: '10%'},
+            'onMouseEnter':handlePopoverOpen,
+            'onMouseLeave':handlePopoverClose,
+        }),
+        createHeaderData('article.product.expansionName', false, false, 'Expansion_Name',cellTypes.TEXT,false, true,{}), //linked with localized name
+        createHeaderData('article.product.name', false, false, 'Name',cellTypes.TEXT,false,true,{}), //TODO: Selectable -> Localizations
+        createHeaderData('article.price', true, false, 'Price',cellTypes.CURRENCY,true,true,{
+            'style':{width: 50},
+            'currency':getCurrencySymbol("de-DE","Eur")
+        }),
+        createHeaderData('article.quantity', true, false, 'Quantity',cellTypes.NUMBER,true,true,{
+            'style':{width: 50}
+        }),
+        createHeaderData('article.product.rarity', false, false, 'Rarity',cellTypes.TEXT,false,true,{}),
+        createHeaderData('article.condition', false, false, 'Condition',cellTypes.SELECTOR,true,false,{
+            'selectorOptions':CONDITIONS
+        }), //Selectable
+        createHeaderData('article.foil', false, false, 'Foil',cellTypes.BOOL,true,true,{}),
+        createHeaderData('article.signed', false, false, 'Signed',cellTypes.BOOL,true,true,{}),
+        createHeaderData('article.altered', false, false, 'Altered',cellTypes.BOOL,true,true,{}),
+        createHeaderData('article.playset', false, false, 'Playset',cellTypes.BOOL,true,true,{}),
+        createHeaderData('article.comment', false, false, 'Comment',cellTypes.TEXT,true,false,{}),
+        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false,false,{}),
+    ]
 
     const columns = [
         {
-            title: "Bild", field: "imageurl", render: rowData => {
+            title: "Image", field: "article.product.imageUrl", filtering: false, sorting: false, render: rowData => {
                 return <img src={rowData.article.product.imageUrl} onMouseEnter={event => {
                     handlePopoverOpen(event, rowData.article.product.imageUrl)
-                }} onMouseLeave={handlePopoverClose}
-                            style={{width: 50, borderRadius: '10%'}}/>
+                }} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}}/>
             }
         },
+        {title: "Expansion", field: "article.product.expansionName"},
         {
-            title: "EN-Name", field: "name", render: rowData => {
+            title: "Name", field: "article.product.name", render: rowData => {
                 return <Typography>{rowData.article.product.name}</Typography>
             }
         },
         {
-            title: "Set Title", field: "expansionName", render: rowData => {
-                return <Typography>{rowData.article.product.expansionName}</Typography>
-            }
+            title: "Price", field: "article.price", editable: 'always',
+            type: 'currency',
+            currencySetting: {
+                locale: 'ch',
+                currencyCode: 'Eur',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            },
         },
-        //{title: "Sprache", field: "language", render: rowData => {return <Select value='en'>{rowData.article.article.product.localizations !== null ?  rowData.article.article.product.localizations.map(locale => <MenuItem value={locale['language']}>{locale['productName']}</MenuItem>) : <MenuItem value="en">"Unknown"</MenuItem>}</Select>}},
-        {
-            title: "Rarity", field: "rarity", render: rowData => {
-                return <Typography>{rowData.article.product.rarity}</Typography>
-            }
-        },
-        {
-            title: "Condition", field: "condition", render: rowData => {
-                return <Typography>{rowData.article.condition}</Typography>
-            }
-        },
-        {
-            title: "Anzahl", field: "quantity", render: rowData => {
-                return <p>{rowData.article.quantity}</p>
-            }
-        },
-        {
-            title: "Preis", field: "price", render: rowData => {
-                return <p>{rowData.article.price}</p>
-            }
-        },
-        {
-            title: "Letzte Änderung", field: "lastEdited", render: rowData => {
-                return <p>{rowData.article.lastEdited}</p>
-            }
-        }
+        {title: "Quantity", field: "article.quantity", type: "numeric", editable: 'always'},
+        {title: "Rarity", field: "article.product.rarity"},
+        {title: "Condition", field: "article.condition"},
+        {title: "foil", field: "article.foil", editable: 'always', type: 'boolean'},
+        {title: "signed", field: "article.signed", editable: 'always', type: 'boolean'},
+        {title: "altered", field: "article.altered", editable: 'always', type: 'boolean'},
+        {title: "playset", field: "article.playset", editable: 'always', type: 'boolean'},
+        {title: "comment", field: "article.comment", editable: 'always'},
+        {title: "Last Edited", field: "article.lastEdited"}
     ]
 
     return (
         <div>
-            {loading ? <LoadingSpinner/> :
-                <MaterialTable
-                    options={options}
-                    columns={columns}
+        {loading ? <LoadingSpinner/> :
+                <DataTable
                     data={articles}
-                    icons={TABLE_ICONS}
-                    actions={actions}
-                    title="Sorter Results"
-                />
-            }
+                    header={header}
+                    onMouseEnter={handlePopoverOpen}
+                    onMouseLeave={handlePopoverClose} />}
             <Popover
                 id="mouse-over-popover"
                 className={classes.popover}
@@ -139,7 +134,5 @@ export default function StockComponent() {
                 <img src={popOverImage}/>
             </Popover>
         </div>
-
     )
-
 }

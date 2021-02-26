@@ -7,6 +7,7 @@ import {LOAD_ARTICLES_SUCCESS} from "../constants/action-types";
 const initialState = {
     articles: []
 };
+// Todo introduce changed article with modified props. Makes revert mucho more easier
 
 function stockReducer(state = initialState, action) {
     switch (action.type) {
