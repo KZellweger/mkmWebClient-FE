@@ -102,6 +102,7 @@ export default function DataTable(props) {
     };
 
     const handleClick = (event, name) => {
+        console.log(name)
         const selectedIndex = selected.indexOf(name);
         let newSelected = [];
 
@@ -173,12 +174,12 @@ export default function DataTable(props) {
                         />
                         <TableBody>
                             {rows.map((row, index) => {
-                                    const isItemSelected = isSelected(row.article.id);
+                                    const isItemSelected = isSelected(row.article.articleId);
                                     const labelId = `enhanced-table-checkbox-${index}`;
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleClick(event, row.name)}
+                                            onClick={(event) => handleClick(event, row.article.articleId)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
