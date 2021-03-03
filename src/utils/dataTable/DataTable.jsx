@@ -145,6 +145,12 @@ export default function DataTable(props) {
         return data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     }
 
+    const handleEdit = (field,value) => {
+        console.log(field,value)
+        console.log(typeof value)
+        props.onEdit(field,value)
+    }
+
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, raw_data.length - page * rowsPerPage);
 
     return (
@@ -179,8 +185,6 @@ export default function DataTable(props) {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleClick(event, row.article.articleId)}
-                                            role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
                                             key={row.name}
@@ -188,12 +192,13 @@ export default function DataTable(props) {
                                         >
                                             <TableCell padding="checkbox">
                                                 <Checkbox
+                                                    onChange={(event) => handleClick(event, row.article.articleId)}
                                                     checked={isItemSelected}
                                                     inputProps={{'aria-labelledby': labelId}}
                                                 />
                                             </TableCell>
                                             {headerData.map(config => {
-                                                return <TableCell> {getTableCellChild(config.type, config.editable, getNestedObject(row, config.id), config.elementProperties)} </TableCell>
+                                                return <TableCell> {getTableCellChild(config.type, config.editable,row.article.articleId + ":" + config.id, getNestedObject(row, config.id), config.elementProperties, handleEdit)} </TableCell>
                                             })}
                                         </TableRow>
                                     );

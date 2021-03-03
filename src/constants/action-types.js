@@ -13,6 +13,12 @@
 export const ADD_ARTICLE = "ADD_ARTICLE"
 
 /**
+ * Perform a manipulation of a property of an existing Article
+ * @type {string}
+ */
+export const EDIT_ARTICLE = "EDIT_ARTICLE"
+
+/**
  * Request the Articles from the Backend-API which are stored in the Local Databse
  * @type {string}
  */

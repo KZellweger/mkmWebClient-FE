@@ -22,6 +22,18 @@ export function addArticles(type, payload) {
     return {type: type, payload: payload}
 }
 
+export function editArticle(type, id,property,value){
+    const payload = {
+        articleId: id,
+        modified: property.split(".")[1], //FIXME: make it nice
+        value: value
+    }
+    return {
+        type:type,
+        payload
+    }
+}
+
 // Async Actions
 export const getArticles = () => {
     return (dispatch) => {

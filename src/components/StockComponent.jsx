@@ -2,7 +2,8 @@ import {Popover, Typography} from "@material-ui/core";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {popOverClose, popOverOpen} from "../actions/commonActions";
-import {getArticles} from "../actions/stockActions";
+import {editArticle, getArticles} from "../actions/stockActions";
+import {EDIT_ARTICLE} from "../constants/action-types";
 import {CONDITIONS, getCurrencySymbol, popOverStyles, TABLE_ICONS} from "../constants/utils";
 import DataTable, {createHeaderData} from "../utils/dataTable/DataTable";
 import LoadingSpinner from "../utils/LoadingSpinner";
@@ -10,7 +11,7 @@ import {cellTypes} from "../utils/dataTable/TableCells";
 
 
 export default function StockComponent() {
-    const articles = useSelector(state => state.stock)
+    const articles = useSelector(state => state.stock.articles)
     const loading = useSelector(state => state.common.loading.stock)
     const open = useSelector(state => state.common.popover.open)
     const anchorEl = useSelector(state => state.common.popover.anchorEl)
@@ -20,8 +21,10 @@ export default function StockComponent() {
         dispatch(getArticles())
     },[])
 
-    const handleEdit = () => {
-        //todo
+    const handleEdit = (field,value) => {
+        console.log(typeof value)
+        const target= field.split(":")
+        dispatch(editArticle(EDIT_ARTICLE,parseInt(target[0]),target[1],value))//FIXME: make nice
     }
     const handleDelete = () => {
         //todo
@@ -69,49 +72,14 @@ export default function StockComponent() {
         createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false,false,{}),
     ]
 
-    const columns = [
-        {
-            title: "Image", field: "article.product.imageUrl", filtering: false, sorting: false, render: rowData => {
-                return <img src={rowData.article.product.imageUrl} onMouseEnter={event => {
-                    handlePopoverOpen(event, rowData.article.product.imageUrl)
-                }} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}}/>
-            }
-        },
-        {title: "Expansion", field: "article.product.expansionName"},
-        {
-            title: "Name", field: "article.product.name", render: rowData => {
-                return <Typography>{rowData.article.product.name}</Typography>
-            }
-        },
-        {
-            title: "Price", field: "article.price", editable: 'always',
-            type: 'currency',
-            currencySetting: {
-                locale: 'ch',
-                currencyCode: 'Eur',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            },
-        },
-        {title: "Quantity", field: "article.quantity", type: "numeric", editable: 'always'},
-        {title: "Rarity", field: "article.product.rarity"},
-        {title: "Condition", field: "article.condition"},
-        {title: "foil", field: "article.foil", editable: 'always', type: 'boolean'},
-        {title: "signed", field: "article.signed", editable: 'always', type: 'boolean'},
-        {title: "altered", field: "article.altered", editable: 'always', type: 'boolean'},
-        {title: "playset", field: "article.playset", editable: 'always', type: 'boolean'},
-        {title: "comment", field: "article.comment", editable: 'always'},
-        {title: "Last Edited", field: "article.lastEdited"}
-    ]
-
     return (
         <div>
         {loading ? <LoadingSpinner/> :
                 <DataTable
                     data={articles}
                     header={header}
-                    onMouseEnter={handlePopoverOpen}
-                    onMouseLeave={handlePopoverClose} />}
+                    onEdit={handleEdit}
+                />}
             <Popover
                 id="mouse-over-popover"
                 className={classes.popover}
