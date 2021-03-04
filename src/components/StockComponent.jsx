@@ -1,14 +1,14 @@
-import {Popover, Typography} from "@material-ui/core";
+import {Button, Popover, Typography} from "@material-ui/core";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {readProductsFromMkm} from "../actions/accountActions";
 import {popOverClose, popOverOpen} from "../actions/commonActions";
-import {editArticle, getArticles} from "../actions/stockActions";
+import {editArticle, getArticles, updateArticles} from "../actions/stockActions";
 import {EDIT_ARTICLE} from "../constants/action-types";
 import {CONDITIONS, getCurrencySymbol, popOverStyles, TABLE_ICONS} from "../constants/utils";
 import DataTable, {createHeaderData} from "../utils/dataTable/DataTable";
 import LoadingSpinner from "../utils/LoadingSpinner";
 import {cellTypes} from "../utils/dataTable/TableCells";
-
 
 export default function StockComponent() {
     const articles = useSelector(state => state.stock.articles)
@@ -24,10 +24,14 @@ export default function StockComponent() {
 
     const handleEdit = (inArticleId,inProperty,value) => {
         const articleId = parseInt(inArticleId)
-        dispatch(editArticle(EDIT_ARTICLE,articleId,inProperty,value))
+        dispatch(editArticle(articleId,inProperty,value))
     }
-    const handleDelete = () => {
+    const handleDelete = (articles) => {
         //todo
+    }
+    const handleUpload = (articles) => {
+        console.log(articles)
+        //dispatch(updateArticles(articles))
     }
 
 
@@ -80,7 +84,10 @@ export default function StockComponent() {
                     data={articles}
                     header={header}
                     onEdit={handleEdit}
+                    onSubmit={handleUpload}
+                    submitLabel='Upload to MKM'
                     rowIdProperty = 'article.articleId'
+                    title="My Stock"
                 />}
             <Popover
                 id="mouse-over-popover"

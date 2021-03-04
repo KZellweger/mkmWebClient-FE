@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DataTable(props) {
     const classes = useStyles();
+    const tableTitle = props.title
     const raw_data = props.data
     const headerData = props.header
     const rowIdProperty = props.rowIdProperty
@@ -106,28 +107,22 @@ export default function DataTable(props) {
         const selectedIndex = selected.indexOf(rowId);
         let newSelected = [];
         if (selectedIndex === -1) {
-            console.log("A") //Add new selected
             newSelected = newSelected.concat(selected, rowId);
             setSelected(newSelected);
         }
     }
 
     const handleSelectOnCheckBox = (rowId) => {
-        console.log(rowId)
         const selectedIndex = selected.indexOf(rowId);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            console.log("A") //Add new selected
             newSelected = newSelected.concat(selected, rowId);
         } else if (selectedIndex === 0) {
-            console.log("B") //Pop Selected from start
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
-            console.log("C") //Pop Selected from between
             newSelected = newSelected.concat(selected.slice(0, -1));
         } else if (selectedIndex > 0) {
-            console.log("D") //Remove selected from within
             newSelected = newSelected.concat(
                 selected.slice(0, selectedIndex),
                 selected.slice(selectedIndex + 1),
@@ -165,15 +160,25 @@ export default function DataTable(props) {
         handleSelectOnChange(rowId)
     }
 
+    const handleSubmit = () => {
+        const toUpdate = []
+        selected.map((id) => {
+            toUpdate.push(raw_data.find((item) => getNestedObject(item,rowIdProperty) === id))
+        })
+        props.onSubmit(toUpdate)
+    }
+
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, raw_data.length - page * rowsPerPage);
 
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
                 <EnhancedTableToolbar
+                    title = {tableTitle}
+                    submitLabel = {props.submitLabel}
+                    onSubmit = {handleSubmit}
                     numSelected={selected.length}
                     filterWidgets = {filterWidgets}
-
                 />
                 <TableContainer>
                     <Table

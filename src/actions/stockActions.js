@@ -1,10 +1,11 @@
 import axios from "axios";
 import {
+    EDIT_ARTICLE,
     LOAD_ARTICLES_FAILURE,
     LOAD_ARTICLES_REQUEST,
     LOAD_ARTICLES_SUCCESS,
     POST_ARTICLES_FAILURE,
-    POST_ARTICLES_REQUEST
+    POST_ARTICLES_REQUEST, UPDATE_ARTICLES_REQUEST
 } from "../constants/action-types";
 import {ARTICLES_FROM_DB, CSV_TO_MKM, IMAGE_PREFIX} from "../constants/api-endpoints";
 import {DATE_TIME_FORMAT_OPTIONS} from "../constants/utils";
@@ -22,14 +23,14 @@ export function addArticles(type, payload) {
     return {type: type, payload: payload}
 }
 
-export function editArticle(type, id,property,value){
+export function editArticle(id,property,value){
     const payload = {
         articleId: id,
         modified: property.split(".")[1], //FIXME: make it nice
         value: value
     }
     return {
-        type:type,
+        type:EDIT_ARTICLE,
         payload
     }
 }
@@ -58,5 +59,11 @@ export const postArticles = (data) => {
         }).catch(err => {
             return {type: POST_ARTICLES_FAILURE, payload: err.getMessage}
         })
+    }
+}
+
+export const updateArticles = (data) => {
+    return (dispatch) => {
+        dispatch({type: UPDATE_ARTICLES_REQUEST})
     }
 }
