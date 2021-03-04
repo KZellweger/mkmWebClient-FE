@@ -17,11 +17,9 @@ function stockReducer(state = initialState, action) {
             state.articles = state.articles.concat(newArticles)
             return state
         case EDIT_ARTICLE:
-            console.log(state)
             const index = state.articles.findIndex((article) => article.article.articleId === action.payload.articleId)
             const newArticle = Object.assign({},state.articles[index].article)
             newArticle[action.payload.modified] = action.payload.value
-            console.log(state.articles[index].modified)
             if(Object.entries(state.articles[index].modified).length === 0){
                 const origArticle = Object.assign({},state.articles[index].article)
                 return {

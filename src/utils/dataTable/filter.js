@@ -16,10 +16,7 @@ const getValue = value => (typeof value === 'string' ? value.toUpperCase() : val
  * @returns {Array} Result Array
  */
 function multiPropsFilter(data, filters) {
-    console.log("Filter Objects: ")
-    console.log(filters)
     const filterKeys = Object.keys(filters)
-    console.log(filterKeys)
     return data.filter(item => {
         return filterKeys.every(key => {
             if(filters[key].type === cellTypes.TEXT){
@@ -37,7 +34,6 @@ function multiPropsFilter(data, filters) {
                 const max = filters[key].max
                 return (min.length && num >= parseFloat(min)) && (!max.length || num <= parseFloat(max))
             }else if(filters[key].type === cellTypes.BOOL){
-                console.log(key, filters[key].value,getNestedObject(item,key))
                 return filters[key].value === getNestedObject(item,key)
             }
         })

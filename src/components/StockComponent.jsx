@@ -12,6 +12,7 @@ import {cellTypes} from "../utils/dataTable/TableCells";
 
 export default function StockComponent() {
     const articles = useSelector(state => state.stock.articles)
+    const modified = useSelector(state => state.stock.modified)
     const loading = useSelector(state => state.common.loading.stock)
     const open = useSelector(state => state.common.popover.open)
     const anchorEl = useSelector(state => state.common.popover.anchorEl)
@@ -21,14 +22,14 @@ export default function StockComponent() {
         dispatch(getArticles())
     },[])
 
-    const handleEdit = (field,value) => {
-        console.log(typeof value)
-        const target= field.split(":")
-        dispatch(editArticle(EDIT_ARTICLE,parseInt(target[0]),target[1],value))//FIXME: make nice
+    const handleEdit = (inArticleId,inProperty,value) => {
+        const articleId = parseInt(inArticleId)
+        dispatch(editArticle(EDIT_ARTICLE,articleId,inProperty,value))
     }
     const handleDelete = () => {
         //todo
     }
+
 
     const classes = popOverStyles();
 
@@ -79,6 +80,7 @@ export default function StockComponent() {
                     data={articles}
                     header={header}
                     onEdit={handleEdit}
+                    rowIdProperty = 'article.articleId'
                 />}
             <Popover
                 id="mouse-over-popover"

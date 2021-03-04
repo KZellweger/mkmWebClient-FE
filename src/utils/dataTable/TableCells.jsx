@@ -12,8 +12,8 @@ export const cellTypes = {
     DATE: 'date'
 }
 
-export default function getTableCellChild(type, editable, cellId, cellData, elementProperties, onEdit) {
-    const handleChange = (field, type) => (event) => {
+export default function getTableCellChild(type, editable, rowId, columnId, cellData, elementProperties, onEdit) {
+    const handleChange = (rowId, columnId, type) => (event) => {
         let value;
         switch (type) {
             case cellTypes.TEXT:
@@ -29,21 +29,21 @@ export default function getTableCellChild(type, editable, cellId, cellData, elem
                 value = event.target.value
         }
 
-        onEdit(field, value)
+        onEdit(rowId, columnId, value)
     }
 
     switch (type) {
         case cellTypes.TEXT:
             if (editable) {
                 return <Input
-                    id={cellId}
+                    id={rowId + ':' + columnId}
                     value={cellData}
                     style={elementProperties.style}
-                    onChange={handleChange(cellId, cellTypes.TEXT)}
+                    onChange={handleChange(rowId, columnId, cellTypes.TEXT)}
                 />
             } else {
                 return <Typography
-                    id={cellId}
+                    id={rowId + ':' + columnId}
                     style={elementProperties.style}>
                     {cellData}
                 </Typography>
@@ -51,43 +51,43 @@ export default function getTableCellChild(type, editable, cellId, cellData, elem
         case cellTypes.NUMBER:
             if (editable) {
                 return <Input
-                    id={cellId}
+                    id={rowId + ':' + columnId}
                     value={cellData}
                     type='number'
                     style={elementProperties.style}
-                    onChange={handleChange(cellId, cellTypes.NUMBER)}/>
+                    onChange={handleChange(rowId, columnId, cellTypes.NUMBER)}/>
             } else {
-                return <Typography id={cellId} style={elementProperties.style}>{cellData}</Typography>
+                return <Typography id={rowId + ':' + columnId} style={elementProperties.style}>{cellData}</Typography>
             }
         case cellTypes.BOOL:
             if (editable) {
                 return <Checkbox
-                    id={cellId}
+                    id={rowId + ':' + columnId}
                     checked={cellData}
                     style={elementProperties.style}
-                    onChange={handleChange(cellId, cellTypes.BOOL)}
+                    onChange={handleChange(rowId, columnId, cellTypes.BOOL)}
                 />
             } else {
                 //TODO: improt FA-Icons
                 return cellData ? <Typography>TRUE</Typography> : <Typography>FALSE</Typography>
             }
         case cellTypes.IMAGE:
-            return <img alt="No Image found" id={cellId} src={cellData} style={elementProperties.style}
+            return <img alt="No Image found" id={rowId + ':' + columnId} src={cellData} style={elementProperties.style}
                         onMouseEnter={event => {
                             elementProperties.onMouseEnter(event, cellData)
                         }} onMouseLeave={elementProperties.onMouseLeave}/>
         case cellTypes.CURRENCY:
             return <Input value={cellData}
                           style={elementProperties.style}
-                          onChange={handleChange(cellId, cellTypes.NUMBER)}
+                          onChange={handleChange(rowId, columnId, cellTypes.NUMBER)}
                           endAdornment={<InputAdornment position="end">{elementProperties.currency}</InputAdornment>}/>
         case cellTypes.SELECTOR:
             return <TextField
-                id={cellId}
+                id={rowId + ':' + columnId}
                 value={cellData}
                 select
                 style={elementProperties.style}
-                onChange={handleChange(cellId, cellTypes.TEXT)}>
+                onChange={handleChange(rowId, columnId, cellTypes.TEXT)}>
                 {elementProperties.selectorOptions.map(option => {
                     return <MenuItem key={option.value} value={option.value}>
                         {option.label}
