@@ -29,9 +29,11 @@ export default function StockComponent() {
     const handleDelete = (articles) => {
         //todo
     }
-    const handleUpload = (articles) => {
-        console.log(articles)
-        //dispatch(updateArticles(articles))
+    const handleUpload = (data) => {
+        const articles = data.map((article) => {
+            return article.article
+        })
+        dispatch(updateArticles(articles))
     }
 
 
@@ -74,7 +76,7 @@ export default function StockComponent() {
         createHeaderData('article.altered', false, false, 'Altered',cellTypes.BOOL,true,true,{}),
         createHeaderData('article.playset', false, false, 'Playset',cellTypes.BOOL,true,true,{}),
         createHeaderData('article.comment', false, false, 'Comment',cellTypes.TEXT,true,false,{}),
-        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false,false,{}),
+        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.DATE,false,false,{}),
     ]
 
     return (
