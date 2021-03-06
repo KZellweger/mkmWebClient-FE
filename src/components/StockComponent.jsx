@@ -61,7 +61,7 @@ export default function StockComponent() {
         createHeaderData('article.product.expansionName', false, false, 'Expansion_Name',cellTypes.TEXT,false, true,{}), //linked with localized name
         createHeaderData('article.product.name', false, false, 'Name',cellTypes.TEXT,false,true,{}), //TODO: Selectable -> Localizations
         createHeaderData('article.price', true, false, 'Price',cellTypes.CURRENCY,true,true,{
-            'style':{width: 50},
+            'style':{width: 80},
             'currency':getCurrencySymbol("de-DE","Eur")
         }),
         createHeaderData('article.quantity', true, false, 'Quantity',cellTypes.NUMBER,true,true,{

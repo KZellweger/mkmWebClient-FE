@@ -1,6 +1,7 @@
 import {Input, InputAdornment, MenuItem, TextField, Typography} from "@material-ui/core";
 import Checkbox from "@material-ui/core/Checkbox";
-import React, {useState} from "react";
+import React from "react";
+import {DATE_TIME_FORMAT_OPTIONS} from "../../constants/utils";
 
 export const cellTypes = {
     TEXT: 'text',
@@ -23,7 +24,7 @@ export default function getTableCellChild(type, editable, rowId, columnId, cellD
                 value = parseFloat(event.target.value)
                 break;
             case cellTypes.BOOL:
-                value = event.target.value.toLowerCase() === 'true'
+                value = event.target.checked
                 break;
             default:
                 value = event.target.value
@@ -77,10 +78,16 @@ export default function getTableCellChild(type, editable, rowId, columnId, cellD
                             elementProperties.onMouseEnter(event, cellData)
                         }} onMouseLeave={elementProperties.onMouseLeave}/>
         case cellTypes.CURRENCY:
-            return <Input value={cellData}
-                          style={elementProperties.style}
-                          onChange={handleChange(rowId, columnId, cellTypes.NUMBER)}
-                          endAdornment={<InputAdornment position="end">{elementProperties.currency}</InputAdornment>}/>
+            return <Input
+                id={rowId + ':' + columnId}
+                value={cellData}
+                type='number'
+                inputProps={
+                    {'min': '0','step':'0.05'}
+                }
+                style={elementProperties.style}
+                onChange={handleChange(rowId, columnId, cellTypes.NUMBER)}
+                endAdornment={<InputAdornment position="end">{elementProperties.currency}</InputAdornment>}/>
         case cellTypes.SELECTOR:
             return <TextField
                 id={rowId + ':' + columnId}
@@ -93,6 +100,12 @@ export default function getTableCellChild(type, editable, rowId, columnId, cellD
                         {option.label}
                     </MenuItem>
                 })}</TextField>
+        case cellTypes.DATE:
+            return <Typography
+                id={rowId + ':' + columnId}
+                style={elementProperties.style}>
+                {cellData.toLocaleString("de-DE", DATE_TIME_FORMAT_OPTIONS)}
+            </Typography>
         default:
             return <Typography style={elementProperties.style}>{cellData}</Typography>
 
