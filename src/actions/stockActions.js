@@ -5,17 +5,18 @@ import {
     LOAD_ARTICLES_REQUEST,
     LOAD_ARTICLES_SUCCESS,
     POST_ARTICLES_FAILURE,
-    POST_ARTICLES_REQUEST, UPDATE_ARTICLES_REQUEST
+    POST_ARTICLES_REQUEST,
+    UPDATE_ARTICLES_FAILURE,
+    UPDATE_ARTICLES_REQUEST,
+    UPDATE_ARTICLES_SUCCESS
 } from "../constants/action-types";
 import {ARTICLES_FROM_DB, CSV_TO_MKM, IMAGE_PREFIX} from "../constants/api-endpoints";
-import {DATE_TIME_FORMAT_OPTIONS} from "../constants/utils";
 
 // Action Creators
 export function addArticles(type, payload) {
-    //TODO: catch undefined
     payload = payload.map(a => {
-        if (a !== undefined){
-                a.lastEdited = new Date(a.lastEdited[0], a.lastEdited[1], a.lastEdited[2], a.lastEdited[3], a.lastEdited[5], a.lastEdited[5]);
+        if (a !== undefined) {
+            a.lastEdited = new Date(a.lastEdited[0], a.lastEdited[1], a.lastEdited[2], a.lastEdited[3], a.lastEdited[5], a.lastEdited[5]);
             a.product.imageUrl = a.product.imageUrl.replace(".", IMAGE_PREFIX);
         }
         return a;
@@ -23,14 +24,14 @@ export function addArticles(type, payload) {
     return {type: type, payload: payload}
 }
 
-export function editArticle(id,property,value){
+export function editArticle(id, property, value) {
     const payload = {
         articleId: id,
         modified: property.split(".")[1], //FIXME: make it nice
         value: value
     }
     return {
-        type:EDIT_ARTICLE,
+        type: EDIT_ARTICLE,
         payload
     }
 }
@@ -41,7 +42,7 @@ export const getArticles = () => {
         dispatch({type: LOAD_ARTICLES_REQUEST})
         return axios.get(ARTICLES_FROM_DB)
             .then(result => {
-                dispatch(addArticles(LOAD_ARTICLES_SUCCESS,result.data))
+                dispatch(addArticles(LOAD_ARTICLES_SUCCESS, result.data))
             })
             .catch(error => {
                 console.log(error)
@@ -57,11 +58,13 @@ export const postArticles = (data) => {
         axios.post(CSV_TO_MKM, data, {}).then(res => {
             dispatch(getArticles())
         }).catch(err => {
-            dispatch({type: POST_ARTICLES_FAILURE, payload: {
-                status: err.response.status,
+            dispatch({
+                type: POST_ARTICLES_FAILURE, payload: {
+                    status: err.response.status,
                     header: err.response.headers,
-                    message : err.response.data.message
-                }})
+                    message: err.response.data.message
+                }
+            })
         })
     }
 }
@@ -70,13 +73,17 @@ export const updateArticles = (data) => {
     console.log(data)
     return (dispatch) => {
         dispatch({type: UPDATE_ARTICLES_REQUEST})
-        axios.put(ARTICLES_FROM_DB,data,{}).then(res => {
-            console.log(res.data)
+        axios.put(ARTICLES_FROM_DB, data, {}).then(res => {
+            dispatch(getArticles())
         }).catch(err => {
-            if(err.response!==undefined){
-                console.log(err.response.status)
-                console.log(err.response.data)
-            }
+            console.log(err)
+            dispatch({
+                type: UPDATE_ARTICLES_FAILURE, payload: {
+                    status: "err.response.status",
+                    header: "err.response.headers",
+                    message: "err.response.data.message"
+                }
+            })
         })
     }
 }

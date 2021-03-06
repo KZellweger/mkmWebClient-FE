@@ -1,4 +1,4 @@
-import {EDIT_ARTICLE, LOAD_ARTICLES_SUCCESS} from "../constants/action-types";
+import {EDIT_ARTICLE, LOAD_ARTICLES_SUCCESS, UPDATE_ARTICLES_SUCCESS} from "../constants/action-types";
 
 /**
  * State of the Stock. Holds a list of articles with a flag for each article if it was modified in the current session.
@@ -7,6 +7,7 @@ import {EDIT_ARTICLE, LOAD_ARTICLES_SUCCESS} from "../constants/action-types";
 const initialState = {
     articles: []
 };
+
 // Todo introduce changed article with modified props. Makes revert mucho more easier
 
 function stockReducer(state = initialState, action) {
@@ -18,23 +19,23 @@ function stockReducer(state = initialState, action) {
             return state
         case EDIT_ARTICLE:
             const index = state.articles.findIndex((article) => article.article.articleId === action.payload.articleId)
-            const newArticle = Object.assign({},state.articles[index].article)
+            const newArticle = Object.assign({}, state.articles[index].article)
             newArticle[action.payload.modified] = action.payload.value
-            if(Object.entries(state.articles[index].modified).length === 0){
-                const origArticle = Object.assign({},state.articles[index].article)
+            if (Object.entries(state.articles[index].modified).length === 0) {
+                const origArticle = Object.assign({}, state.articles[index].article)
                 return {
-                    articles:[
-                        ...state.articles.slice(0,index),
-                        {modified:origArticle,article:newArticle},
-                        ...state.articles.slice(index +1)
+                    articles: [
+                        ...state.articles.slice(0, index),
+                        {modified: origArticle, article: newArticle},
+                        ...state.articles.slice(index + 1)
                     ]
                 }
             }
             return {
-                articles:[
-                    ...state.articles.slice(0,index),
-                    {modified:state.articles[index].modified,article:newArticle},
-                    ...state.articles.slice(index +1)
+                articles: [
+                    ...state.articles.slice(0, index),
+                    {modified: state.articles[index].modified, article: newArticle},
+                    ...state.articles.slice(index + 1)
                 ]
             }
         default:
