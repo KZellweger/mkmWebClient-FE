@@ -36,7 +36,7 @@ export const STOCK = SERVER_URL + '/stock'
  * Because of API restrictions, fetching the Stock from MKM must be triggered explicitly by the user.
  * @type {string}
  */
-export const ARTICLES_FROM_DB = STOCK + '/articles'
+export const ARTICLES_FROM_DB = STOCK + '/articles' //TODO: rename
 /**
  * Post Articles to MKM-Stock.
  * Used for interactions with {@link https://api.cardmarket.com/ws/documentation/API_2.0:Stock_Management}

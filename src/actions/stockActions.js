@@ -15,7 +15,7 @@ export function addArticles(type, payload) {
     //TODO: catch undefined
     payload = payload.map(a => {
         if (a !== undefined){
-                a.lastEdited = new Date(a.lastEdited[0], a.lastEdited[1], a.lastEdited[2], a.lastEdited[3], a.lastEdited[5], a.lastEdited[5]).toLocaleString("de-DE", DATE_TIME_FORMAT_OPTIONS);
+                a.lastEdited = new Date(a.lastEdited[0], a.lastEdited[1], a.lastEdited[2], a.lastEdited[3], a.lastEdited[5], a.lastEdited[5]);
             a.product.imageUrl = a.product.imageUrl.replace(".", IMAGE_PREFIX);
         }
         return a;
@@ -57,13 +57,26 @@ export const postArticles = (data) => {
         axios.post(CSV_TO_MKM, data, {}).then(res => {
             dispatch(getArticles())
         }).catch(err => {
-            return {type: POST_ARTICLES_FAILURE, payload: err.getMessage}
+            dispatch({type: POST_ARTICLES_FAILURE, payload: {
+                status: err.response.status,
+                    header: err.response.headers,
+                    message : err.response.data.message
+                }})
         })
     }
 }
 
 export const updateArticles = (data) => {
+    console.log(data)
     return (dispatch) => {
         dispatch({type: UPDATE_ARTICLES_REQUEST})
+        axios.put(ARTICLES_FROM_DB,data,{}).then(res => {
+            console.log(res.data)
+        }).catch(err => {
+            if(err.response!==undefined){
+                console.log(err.response.status)
+                console.log(err.response.data)
+            }
+        })
     }
 }
