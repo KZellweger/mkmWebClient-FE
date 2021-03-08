@@ -19,7 +19,8 @@ import {
     MERGE_PRODUCTS_SUCCESS,
     POST_ARTICLES_FAILURE,
     POST_ARTICLES_REQUEST,
-    POST_ARTICLES_SUCCESS
+    POST_ARTICLES_SUCCESS,
+    SYNC_STOCK_REQUEST
 } from "../../constants/action-types";
 
 const initialState = {
@@ -60,6 +61,7 @@ function loadingReducer(state = initialState, action) {
                 products: false
             }
         case LOAD_ARTICLES_REQUEST:
+        case SYNC_STOCK_REQUEST:
             return {
                 ...state,
                 stock: true

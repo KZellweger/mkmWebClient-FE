@@ -5,12 +5,12 @@ import {
     LOAD_ARTICLES_REQUEST,
     LOAD_ARTICLES_SUCCESS,
     POST_ARTICLES_FAILURE,
-    POST_ARTICLES_REQUEST,
+    POST_ARTICLES_REQUEST, SYNC_STOCK_REQUEST,
     UPDATE_ARTICLES_FAILURE,
     UPDATE_ARTICLES_REQUEST,
     UPDATE_ARTICLES_SUCCESS
 } from "../constants/action-types";
-import {ARTICLES_FROM_DB, CSV_TO_MKM, IMAGE_PREFIX} from "../constants/api-endpoints";
+import {IMAGE_PREFIX, STOCK, SYNC_STOCK} from "../constants/api-endpoints";
 
 // Action Creators
 export function addArticles(type, payload) {
@@ -40,7 +40,7 @@ export function editArticle(id, property, value) {
 export const getArticles = () => {
     return (dispatch) => {
         dispatch({type: LOAD_ARTICLES_REQUEST})
-        return axios.get(ARTICLES_FROM_DB)
+        return axios.get(STOCK)
             .then(result => {
                 dispatch(addArticles(LOAD_ARTICLES_SUCCESS, result.data))
             })
@@ -51,11 +51,29 @@ export const getArticles = () => {
     }
 }
 
+export const synchroniseStockWithMkm = () => {
+    return(dispatch) => {
+        dispatch({type: SYNC_STOCK_REQUEST})
+        axios.get(SYNC_STOCK)
+            .then(result => {
+                dispatch(addArticles(LOAD_ARTICLES_SUCCESS, result.data))
+            })
+            .catch(err => {
+                dispatch({
+                    type: POST_ARTICLES_FAILURE, payload: {
+                        status: err.response.status,
+                        header: err.response.headers,
+                        message: err.response.data.message
+                    }
+                })
+            })
+    }
+}
+
 export const postArticles = (data) => {
-    //TODO: Generalize this Post API call (BE as well)
     return (dispatch) => {
         dispatch({type: POST_ARTICLES_REQUEST})
-        axios.post(CSV_TO_MKM, data, {}).then(res => {
+        axios.post(STOCK, data, {}).then(res => {
             dispatch(getArticles())
         }).catch(err => {
             dispatch({
@@ -73,7 +91,7 @@ export const updateArticles = (data) => {
     console.log(data)
     return (dispatch) => {
         dispatch({type: UPDATE_ARTICLES_REQUEST})
-        axios.put(ARTICLES_FROM_DB, data, {}).then(res => {
+        axios.put(STOCK, data, {}).then(res => {
             dispatch(getArticles())
         }).catch(err => {
             console.log(err)

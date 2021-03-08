@@ -1,12 +1,13 @@
 import {Button, Popover, Typography} from "@material-ui/core";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {readProductsFromMkm} from "../actions/accountActions";
+import {readProductsFromMkm, updateProductsDB} from "../actions/accountActions";
 import {popOverClose, popOverOpen} from "../actions/commonActions";
-import {editArticle, getArticles, updateArticles} from "../actions/stockActions";
+import {editArticle, getArticles, synchroniseStockWithMkm, updateArticles} from "../actions/stockActions";
 import {EDIT_ARTICLE} from "../constants/action-types";
 import {CONDITIONS, getCurrencySymbol, popOverStyles, TABLE_ICONS} from "../constants/utils";
 import DataTable, {createHeaderData} from "../utils/dataTable/DataTable";
+import ErrorMessage from "../utils/ErrorMessage";
 import LoadingSpinner from "../utils/LoadingSpinner";
 import {cellTypes} from "../utils/dataTable/TableCells";
 
@@ -82,6 +83,7 @@ export default function StockComponent() {
     return (
         <div>
         {loading ? <LoadingSpinner/> :
+            articles.length > 0 ?
                 <DataTable
                     data={articles}
                     header={header}
@@ -90,7 +92,15 @@ export default function StockComponent() {
                     submitLabel='Upload to MKM'
                     rowIdProperty = 'article.articleId'
                     title="My Stock"
-                />}
+                />  : <h3>Stock is empty</h3>
+        }
+        <Button
+            color='secondary'
+            variant='contained'
+            onClick={() => {
+            if (window.confirm('Delete and Reload Stock from MKM?')) dispatch(synchroniseStockWithMkm())
+        }}
+        >Synchronize Stock with Mkm</Button>
             <Popover
                 id="mouse-over-popover"
                 className={classes.popover}
@@ -112,6 +122,7 @@ export default function StockComponent() {
             >
                 <img src={popOverImage}/>
             </Popover>
+            <ErrorMessage/>
         </div>
     )
 }

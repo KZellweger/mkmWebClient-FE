@@ -7,12 +7,12 @@ import {
     LOAD_ACCOUNT_REQUEST,
     LOAD_ACCOUNT_SUCCESS,
     LOAD_PRODUCTS_REQUEST,
-    LOAD_PRODUCTS_SUCCESS,
+    LOAD_PRODUCTS_SUCCESS, LOAD_REQUEST_COUNTER_FAILURE, LOAD_REQUEST_COUNTER_REQUEST, LOAD_REQUEST_COUNTER_SUCCESS,
     MERGE_PRODUCTS_FAILURE,
     MERGE_PRODUCTS_REQUEST,
-    MERGE_PRODUCTS_SUCCESS
+    MERGE_PRODUCTS_SUCCESS, POST_ARTICLES_FAILURE
 } from "../constants/action-types";
-import {ACCOUNT, PRODUCT} from "../constants/api-endpoints";
+import {ACCOUNT, PRODUCT, REQUEST_COUNTER} from "../constants/api-endpoints";
 import {DATEFORMAT_OPTIONS} from "../constants/utils";
 
 /*
@@ -46,6 +46,32 @@ export const getAccount = () => {
             })
             .catch(error => {
                 dispatch({type: LOAD_ACCOUNT_FAILURE, payload: error})
+            })
+    }
+}
+
+export const getRequestCounter = () => {
+    return (dispatch) => {
+        dispatch({type: LOAD_REQUEST_COUNTER_REQUEST})
+        return axios.get(REQUEST_COUNTER)
+            .then(result => {
+                console.log(result)
+                dispatch({
+                    type: LOAD_REQUEST_COUNTER_SUCCESS,
+                    payload: {
+                        used: result.data['USED'],
+                        limit: result.data['LIMIT']
+                    }
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: LOAD_REQUEST_COUNTER_FAILURE, payload: {
+                        status: error.response.status,
+                        header: error.response.headers,
+                        message: error.response.data.message
+                    }
+                })
             })
     }
 }
