@@ -100,3 +100,26 @@ export const RARITY = {
     RARE: "rare",
     MYTHIC: "mythicrare"
 }
+
+export const LANGUAGE = [
+    {
+        value: 'en',
+        label: 'English'
+    },
+    {
+        value: 'de',
+        label: 'Deutsch'
+    },
+    {
+        value: 'fr',
+        label: 'French'
+    },
+    {
+        value: 'es',
+        label: 'Spanish'
+    },
+    {
+        value: 'it',
+        label: 'Italian'
+    }
+]

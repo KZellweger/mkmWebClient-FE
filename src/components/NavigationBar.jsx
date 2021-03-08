@@ -1,10 +1,18 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Nav} from "react-bootstrap";
 import Navbar from "react-bootstrap/Navbar";
 import NavbarBrand from "react-bootstrap/NavbarBrand";
+import NavbarCollapse from "react-bootstrap/NavbarCollapse";
+import {useDispatch, useSelector} from "react-redux";
+import {getRequestCounter} from "../actions/accountActions";
 import logo from '../assets/Test.png';
-
+//TODO: Use MaterialUI Components
 export default function NavigationBar() {
+    const account = useSelector(state => state.account)
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(getRequestCounter())
+    },[])
     return (
         <Navbar bg="dark" variant="dark" sticky={"top"}>
             <NavbarBrand href="#home">
@@ -22,6 +30,9 @@ export default function NavigationBar() {
                 <Nav.Link href="/statistics">Statistics</Nav.Link>
                 <Nav.Link href="/account">Account Overview</Nav.Link>
             </Nav>
+            <Navbar.Collapse className="justify-content-end">
+                <Navbar.Text>{account.requestUsed + " of " + account.requestLimit + " Requests used"}</Navbar.Text>
+            </Navbar.Collapse>
         </Navbar>
     )
 }

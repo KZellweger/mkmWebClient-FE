@@ -1,16 +1,19 @@
-import {Popover, Typography} from "@material-ui/core";
+import {Button, Popover, Typography} from "@material-ui/core";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
+import {readProductsFromMkm, updateProductsDB} from "../actions/accountActions";
 import {popOverClose, popOverOpen} from "../actions/commonActions";
-import {getArticles} from "../actions/stockActions";
-import {CONDITIONS, getCurrencySymbol, popOverStyles, TABLE_ICONS} from "../constants/utils";
+import {editArticle, getArticles, synchroniseStockWithMkm, updateArticles} from "../actions/stockActions";
+import {EDIT_ARTICLE} from "../constants/action-types";
+import {CONDITIONS, getCurrencySymbol, LANGUAGE, popOverStyles, TABLE_ICONS} from "../constants/utils";
 import DataTable, {createHeaderData} from "../utils/dataTable/DataTable";
+import ErrorMessage from "../utils/ErrorMessage";
 import LoadingSpinner from "../utils/LoadingSpinner";
 import {cellTypes} from "../utils/dataTable/TableCells";
 
-
 export default function StockComponent() {
-    const articles = useSelector(state => state.stock)
+    const articles = useSelector(state => state.stock.articles)
+    const modified = useSelector(state => state.stock.modified)
     const loading = useSelector(state => state.common.loading.stock)
     const open = useSelector(state => state.common.popover.open)
     const anchorEl = useSelector(state => state.common.popover.anchorEl)
@@ -20,12 +23,20 @@ export default function StockComponent() {
         dispatch(getArticles())
     },[])
 
-    const handleEdit = () => {
+    const handleEdit = (inArticleId,inProperty,value) => {
+        const articleId = parseInt(inArticleId)
+        dispatch(editArticle(articleId,inProperty,value))
+    }
+    const handleDelete = (articles) => {
         //todo
     }
-    const handleDelete = () => {
-        //todo
+    const handleUpload = (data) => {
+        const articles = data.map((article) => {
+            return article.article
+        })
+        dispatch(updateArticles(articles))
     }
+
 
     const classes = popOverStyles();
 
@@ -41,6 +52,17 @@ export default function StockComponent() {
         dispatch(popOverClose())
     };
 
+    const getLocaleText = (locales,articleId) => {
+        const article = articles.find(a => a.article.articleId === articleId)
+        const languageCode = article.article.languageCode
+        const locale = locales.find(l => l.language === languageCode)
+        //fallback
+        if(locale === undefined){
+            locales.find(l => l.language === "en")
+        }
+        return locale['productName']
+    }
+
     // #### Table Configuration ####
     const header = [
         createHeaderData('article.product.imageUrl', false, false, 'Image',cellTypes.IMAGE,false,false,{
@@ -49,9 +71,17 @@ export default function StockComponent() {
             'onMouseLeave':handlePopoverClose,
         }),
         createHeaderData('article.product.expansionName', false, false, 'Expansion_Name',cellTypes.TEXT,false, true,{}), //linked with localized name
-        createHeaderData('article.product.name', false, false, 'Name',cellTypes.TEXT,false,true,{}), //TODO: Selectable -> Localizations
+        createHeaderData('article.product.localizations', false, false, 'Name',cellTypes.LOCALE_TEXT,false,true,{
+            'getLocaleText':getLocaleText,
+            'keyFrom':'article.languageCode',
+            'keyProperty':'language',
+            'valueProperty':'productName'
+        }), //TODO: Selectable -> Localizations
+        createHeaderData('article.languageCode', false, false, 'Language',cellTypes.SELECTOR,true,true,{
+            'selectorOptions':LANGUAGE
+        }),
         createHeaderData('article.price', true, false, 'Price',cellTypes.CURRENCY,true,true,{
-            'style':{width: 50},
+            'style':{width: 80},
             'currency':getCurrencySymbol("de-DE","Eur")
         }),
         createHeaderData('article.quantity', true, false, 'Quantity',cellTypes.NUMBER,true,true,{
@@ -66,52 +96,30 @@ export default function StockComponent() {
         createHeaderData('article.altered', false, false, 'Altered',cellTypes.BOOL,true,true,{}),
         createHeaderData('article.playset', false, false, 'Playset',cellTypes.BOOL,true,true,{}),
         createHeaderData('article.comment', false, false, 'Comment',cellTypes.TEXT,true,false,{}),
-        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.TEXT,false,false,{}),
-    ]
-
-    const columns = [
-        {
-            title: "Image", field: "article.product.imageUrl", filtering: false, sorting: false, render: rowData => {
-                return <img src={rowData.article.product.imageUrl} onMouseEnter={event => {
-                    handlePopoverOpen(event, rowData.article.product.imageUrl)
-                }} onMouseLeave={handlePopoverClose} style={{width: 50, borderRadius: '10%'}}/>
-            }
-        },
-        {title: "Expansion", field: "article.product.expansionName"},
-        {
-            title: "Name", field: "article.product.name", render: rowData => {
-                return <Typography>{rowData.article.product.name}</Typography>
-            }
-        },
-        {
-            title: "Price", field: "article.price", editable: 'always',
-            type: 'currency',
-            currencySetting: {
-                locale: 'ch',
-                currencyCode: 'Eur',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-            },
-        },
-        {title: "Quantity", field: "article.quantity", type: "numeric", editable: 'always'},
-        {title: "Rarity", field: "article.product.rarity"},
-        {title: "Condition", field: "article.condition"},
-        {title: "foil", field: "article.foil", editable: 'always', type: 'boolean'},
-        {title: "signed", field: "article.signed", editable: 'always', type: 'boolean'},
-        {title: "altered", field: "article.altered", editable: 'always', type: 'boolean'},
-        {title: "playset", field: "article.playset", editable: 'always', type: 'boolean'},
-        {title: "comment", field: "article.comment", editable: 'always'},
-        {title: "Last Edited", field: "article.lastEdited"}
+        createHeaderData('article.lastEdited', false, false, 'Last Edited',cellTypes.DATE,false,false,{}),
     ]
 
     return (
         <div>
         {loading ? <LoadingSpinner/> :
+            articles.length > 0 ?
                 <DataTable
                     data={articles}
                     header={header}
-                    onMouseEnter={handlePopoverOpen}
-                    onMouseLeave={handlePopoverClose} />}
+                    onEdit={handleEdit}
+                    onSubmit={handleUpload}
+                    submitLabel='Upload to MKM'
+                    rowIdProperty = 'article.articleId'
+                    title="My Stock"
+                />  : <h3>Stock is empty</h3>
+        }
+        <Button
+            color='secondary'
+            variant='contained'
+            onClick={() => {
+            if (window.confirm('Delete and Reload Stock from MKM?')) dispatch(synchroniseStockWithMkm())
+        }}
+        >Synchronize Stock with Mkm</Button>
             <Popover
                 id="mouse-over-popover"
                 className={classes.popover}
@@ -133,6 +141,7 @@ export default function StockComponent() {
             >
                 <img src={popOverImage}/>
             </Popover>
+            <ErrorMessage/>
         </div>
     )
 }

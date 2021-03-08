@@ -1,12 +1,24 @@
-import {Button, FormControl, FormHelperText, FormLabel, Grid, Input, Popover, Typography} from "@material-ui/core";
+import {
+    Button,
+    Dialog, DialogContentText, DialogTitle,
+    FormControl,
+    FormHelperText,
+    FormLabel,
+    Grid,
+    Input,
+    Popover,
+    Typography
+} from "@material-ui/core";
 import {Delete, Edit} from "@material-ui/icons";
+import {Alert, AlertTitle} from "@material-ui/lab";
 import MaterialTable from "material-table";
-import React from "react";
+import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {popOverClose, popOverOpen} from "../actions/commonActions";
 import {postArticles} from "../actions/stockActions";
 import {uploadCSV} from "../actions/uploadActions";
-import {popOverStyles, TABLE_ICONS} from "../constants/utils";
+import {DATE_TIME_FORMAT_OPTIONS, popOverStyles, TABLE_ICONS} from "../constants/utils";
+import ErrorMessage from "../utils/ErrorMessage";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
 export default function UploadComponent() {
@@ -23,7 +35,10 @@ export default function UploadComponent() {
     }
 
     const handlePost = () => {
-        dispatch(postArticles(cardList))
+        const articles = cardList.map((article) => {
+            return article.article
+        })
+        dispatch(postArticles(articles))
     }
 
     const handleEdit = () => {
@@ -110,7 +125,7 @@ export default function UploadComponent() {
         },
         {
             title: "Letzte Änderung", field: "lastEdited", render: rowData => {
-                return <p>{rowData.article.lastEdited}</p>
+                return <p>{rowData.article.lastEdited.toLocaleString("de-DE", DATE_TIME_FORMAT_OPTIONS)}</p>
             }
         }
     ]
@@ -170,6 +185,7 @@ export default function UploadComponent() {
             >
                 <img src={popOverImage}/>
             </Popover>
+            <ErrorMessage/>
         </div>
 
     );

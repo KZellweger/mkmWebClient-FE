@@ -3,13 +3,14 @@ import {Button, Col, Container, Row} from "react-bootstrap";
 import Table from 'react-bootstrap/Table'
 import {useDispatch, useSelector} from "react-redux"
 import {deleteProductDB, getAccount, readProductsFromMkm, updateProductsDB} from "../actions/accountActions";
+import {initStockDB} from "../actions/stockActions";
 import DataTable from "../utils/dataTable/DataTable";
 import LoadingSpinner from "../utils/LoadingSpinner";
 
 
 export default function AccountComponent() {
     const account = useSelector(state => state.account)
-    const loading = useSelector(state => state.common.loading.account)
+    const loading = useSelector(state => state.common.loading)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getAccount())
@@ -37,7 +38,7 @@ export default function AccountComponent() {
                 </Row>
             </Container>
             <hr/>
-            {loading ? <LoadingSpinner/> :
+            {loading.account || loading.products ? <LoadingSpinner/> :
                 <Table striped bordered hover variant="dark">
                     <tbody className="text-center">
                     <tr>

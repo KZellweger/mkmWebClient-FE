@@ -13,7 +13,13 @@
 export const ADD_ARTICLE = "ADD_ARTICLE"
 
 /**
- * Request the Articles from the Backend-API which are stored in the Local Databse
+ * Perform a manipulation of a property of an existing Article
+ * @type {string}
+ */
+export const EDIT_ARTICLE = "EDIT_ARTICLE"
+
+/**
+ * Request the Articles from the Backend-API which are stored in the Local Database
  * @type {string}
  */
 export const LOAD_ARTICLES_REQUEST = "LOAD_ARTICLES_REQUEST"
@@ -63,6 +69,24 @@ export const UPDATE_ARTICLES_SUCCESS = "UPDATE_ARTICLES_SUCCESS"
  */
 export const UPDATE_ARTICLES_FAILURE = "UPDATE_ARTICLES_FAILURE"
 
+/**
+ * Sync the local Stock with MKM.
+ * The Data received from MKM is source of truth
+ * @type {string}
+ */
+export const SYNC_STOCK_REQUEST = "SYNC_STOCK_REQUEST"
+
+/**
+ * Indicate Successful request
+ * @type {string}
+ */
+export const SYNC_STOCK_SUCCESS = "SYNC_STOCK_SUCCESS"
+
+/**
+ * Indicate failed request
+ * @type {string}
+ */
+export const SYNC_STOCK_FAILURE = "SYNC_STOCK_FAILURE"
 
 // ################# CSV Upload Actions #################
 
@@ -106,6 +130,10 @@ export const LOAD_ACCOUNT_SUCCESS = "LOAD_ACCOUNT_SUCCESS"
  * @type {string}
  */
 export const LOAD_ACCOUNT_FAILURE = "LOAD_ACCOUNT_FAILURE"
+
+export const LOAD_REQUEST_COUNTER_REQUEST = "LOAD_REQUEST_COUNTER_REQUEST";
+export const LOAD_REQUEST_COUNTER_SUCCESS = "LOAD_REQUEST_COUNTER_SUCCESS";
+export const LOAD_REQUEST_COUNTER_FAILURE = "LOAD_REQUEST_COUNTER_FAILURE";
 
 // ################# Data Sync Actions (Handled by Account) ################# TODO: Refactor to own Domain
 /**

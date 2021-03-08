@@ -19,14 +19,15 @@ import {
     MERGE_PRODUCTS_SUCCESS,
     POST_ARTICLES_FAILURE,
     POST_ARTICLES_REQUEST,
-    POST_ARTICLES_SUCCESS
+    POST_ARTICLES_SUCCESS, SYNC_STOCK_FAILURE,
+    SYNC_STOCK_REQUEST, SYNC_STOCK_SUCCESS
 } from "../../constants/action-types";
 
 const initialState = {
-    account: true,
-    products: true,
-    stock: true,
-    upload: true
+    account: false,
+    products: false,
+    stock: false,
+    upload: false
 };
 
 function loadingReducer(state = initialState, action) {
@@ -60,12 +61,15 @@ function loadingReducer(state = initialState, action) {
                 products: false
             }
         case LOAD_ARTICLES_REQUEST:
+        case SYNC_STOCK_REQUEST:
             return {
                 ...state,
                 stock: true
             }
         case LOAD_ARTICLES_SUCCESS:
         case LOAD_ARTICLES_FAILURE:
+        case SYNC_STOCK_SUCCESS:
+        case SYNC_STOCK_FAILURE:
             return {
                 ...state,
                 stock: false,

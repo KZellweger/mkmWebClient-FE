@@ -58,8 +58,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DataTable(props) {
     const classes = useStyles();
+    const tableTitle = props.title
     const raw_data = props.data
     const headerData = props.header
+    const rowIdProperty = props.rowIdProperty
     const [filterCriteria, setFilterCriteria] = React.useState({})
     const debouncedFilterCriteria = useDebounce(300, filterCriteria,{})
     const [order, setOrder] = React.useState('asc');
@@ -101,13 +103,21 @@ export default function DataTable(props) {
         setSelected([]);
     };
 
-    const handleClick = (event, name) => {
-        console.log(name)
-        const selectedIndex = selected.indexOf(name);
+    const handleSelectOnChange = (rowId) => {
+        const selectedIndex = selected.indexOf(rowId);
+        let newSelected = [];
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, rowId);
+            setSelected(newSelected);
+        }
+    }
+
+    const handleSelectOnCheckBox = (rowId) => {
+        const selectedIndex = selected.indexOf(rowId);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            newSelected = newSelected.concat(selected, rowId);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -135,7 +145,7 @@ export default function DataTable(props) {
         setDense(event.target.checked);
     };
 
-    const isSelected = (name) => selected.indexOf(name) !== -1;
+    const isSelected = (rowId) => selected.indexOf(rowId) !== -1;
 
     function filterAndSortData(data, filterCriteria, order, orderBy){
         return stableSort(multiPropsFilter(data,filterCriteria), getComparator(order, orderBy))
@@ -145,15 +155,30 @@ export default function DataTable(props) {
         return data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
     }
 
+    const handleEdit = (rowId,columnId,value) => {
+        props.onEdit(rowId,columnId,value)
+        handleSelectOnChange(rowId)
+    }
+
+    const handleSubmit = () => {
+        const toUpdate = []
+        selected.map((id) => {
+            toUpdate.push(raw_data.find((item) => getNestedObject(item,rowIdProperty) === id))
+        })
+        props.onSubmit(toUpdate)
+    }
+
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, raw_data.length - page * rowsPerPage);
 
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
                 <EnhancedTableToolbar
+                    title = {tableTitle}
+                    submitLabel = {props.submitLabel}
+                    onSubmit = {handleSubmit}
                     numSelected={selected.length}
                     filterWidgets = {filterWidgets}
-
                 />
                 <TableContainer>
                     <Table
@@ -174,13 +199,11 @@ export default function DataTable(props) {
                         />
                         <TableBody>
                             {rows.map((row, index) => {
-                                    const isItemSelected = isSelected(row.article.articleId);
+                                    const isItemSelected = isSelected(getNestedObject(row,rowIdProperty));
                                     const labelId = `enhanced-table-checkbox-${index}`;
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleClick(event, row.article.articleId)}
-                                            role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
                                             key={row.name}
@@ -188,12 +211,13 @@ export default function DataTable(props) {
                                         >
                                             <TableCell padding="checkbox">
                                                 <Checkbox
+                                                    onChange={(event) => handleSelectOnCheckBox(row.article.articleId)}
                                                     checked={isItemSelected}
                                                     inputProps={{'aria-labelledby': labelId}}
                                                 />
                                             </TableCell>
                                             {headerData.map(config => {
-                                                return <TableCell> {getTableCellChild(config.type, config.editable, getNestedObject(row, config.id), config.elementProperties)} </TableCell>
+                                                return <TableCell> {getTableCellChild(config.type, config.editable,getNestedObject(row,rowIdProperty), config.id, getNestedObject(row, config.id), config.elementProperties, handleEdit)} </TableCell>
                                             })}
                                         </TableRow>
                                     );

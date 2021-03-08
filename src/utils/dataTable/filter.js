@@ -16,10 +16,7 @@ const getValue = value => (typeof value === 'string' ? value.toUpperCase() : val
  * @returns {Array} Result Array
  */
 function multiPropsFilter(data, filters) {
-    console.log("Filter Objects: ")
-    console.log(filters)
     const filterKeys = Object.keys(filters)
-    console.log(filterKeys)
     return data.filter(item => {
         return filterKeys.every(key => {
             if(filters[key].type === cellTypes.TEXT){
@@ -37,8 +34,13 @@ function multiPropsFilter(data, filters) {
                 const max = filters[key].max
                 return (min.length && num >= parseFloat(min)) && (!max.length || num <= parseFloat(max))
             }else if(filters[key].type === cellTypes.BOOL){
-                console.log(key, filters[key].value,getNestedObject(item,key))
                 return filters[key].value === getNestedObject(item,key)
+            }else if(filters[key].type === cellTypes.LOCALE_TEXT){
+                const locales = getNestedObject(item,key)
+                const found = locales.map((l) => {
+                    return l[filters[key].valueProperty].includes(filters[key].value)
+                })
+                return found.includes(true)
             }
         })
     })
@@ -56,10 +58,24 @@ function createFilterWidgets(tableHeaderData, filterCriterias, onChange) {
 }
 
 function FilterWidget(column, onChange) {
+
+    const [selector, setSelector] = React.useState()
+
     const handleChange = (field) => (event) => {
         const filterObject = {
             "type": cellTypes.TEXT,
             "key": field,
+            "value": event.target.value
+        }
+        onChange(filterObject)
+    }
+
+    const handleLocalizedChange = (field, valueProperty) => (event) => {
+        console.log(field)
+        const filterObject = {
+            "type": cellTypes.LOCALE_TEXT,
+            "key": field,
+            "valueProperty": valueProperty,
             "value": event.target.value
         }
         onChange(filterObject)
@@ -94,12 +110,29 @@ function FilterWidget(column, onChange) {
         }
     }
 
+    const handleSelectorChange = (field) => (event) => {
+        const filterObject = {
+            "type": cellTypes.TEXT,
+            "key": field,
+            "value": event.target.value
+        }
+        setSelector(event.target.value)
+        onChange(filterObject)
+    }
+
     switch (column.type) {
         case cellTypes.TEXT:
             return (
                 <TextField
                     label={column.label}
                     onChange={handleChange(column.id)}
+                />
+            )
+        case cellTypes.LOCALE_TEXT:
+            return (
+                <TextField
+                    label={column.label}
+                    onChange={handleLocalizedChange(column.id, column.elementProperties.valueProperty)}
                 />
             )
         case cellTypes.CURRENCY:
@@ -130,21 +163,26 @@ function FilterWidget(column, onChange) {
                     />
                 </div>
             )
-        // case cellTypes.SELECTOR:
-        //     return(
-        //     <div>
-        //         <FormLabel>{column.label}</FormLabel>
-        //         <Select
-        //         multiple
-        //         value={[]}
-        //         >
-        //         {column.elementProperties.selectorOptions.map(option => {
-        //             return <MenuItem key={option.value} value={option.value}>
-        //                 {option.label}
-        //             </MenuItem>
-        //         })}</Select>
-        //     </div>
-        //     )
+        case cellTypes.SELECTOR:
+            return(
+            <div>
+                <FormLabel>{column.label}</FormLabel>
+                <Select
+                value={selector}
+                onChange={handleSelectorChange(column.id)}
+                >
+                    <MenuItem
+                        key=''
+                        value=''>
+                        All
+                    </MenuItem>
+                {column.elementProperties.selectorOptions.map(option => {
+                    return <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                })}</Select>
+            </div>
+            )
         default:
             return (
                 <FormLabel>Not Implement yet</FormLabel>
