@@ -5,7 +5,7 @@ import {
     LOAD_ARTICLES_REQUEST,
     LOAD_ARTICLES_SUCCESS,
     POST_ARTICLES_FAILURE,
-    POST_ARTICLES_REQUEST, SYNC_STOCK_REQUEST,
+    POST_ARTICLES_REQUEST, SYNC_STOCK_FAILURE, SYNC_STOCK_REQUEST, SYNC_STOCK_SUCCESS,
     UPDATE_ARTICLES_FAILURE,
     UPDATE_ARTICLES_REQUEST,
     UPDATE_ARTICLES_SUCCESS
@@ -56,11 +56,11 @@ export const synchroniseStockWithMkm = () => {
         dispatch({type: SYNC_STOCK_REQUEST})
         axios.get(SYNC_STOCK)
             .then(result => {
-                dispatch(addArticles(LOAD_ARTICLES_SUCCESS, result.data))
+                dispatch(addArticles(SYNC_STOCK_SUCCESS, result.data))
             })
             .catch(err => {
                 dispatch({
-                    type: POST_ARTICLES_FAILURE, payload: {
+                    type: SYNC_STOCK_FAILURE, payload: {
                         status: err.response.status,
                         header: err.response.headers,
                         message: err.response.data.message

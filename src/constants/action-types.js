@@ -80,13 +80,13 @@ export const SYNC_STOCK_REQUEST = "SYNC_STOCK_REQUEST"
  * Indicate Successful request
  * @type {string}
  */
-export const SYNC_STOCK_SUCCESS = "SYNC_STOCK_REQUEST"
+export const SYNC_STOCK_SUCCESS = "SYNC_STOCK_SUCCESS"
 
 /**
  * Indicate failed request
  * @type {string}
  */
-export const SYNC_STOCK_FAILURE = "SYNC_STOCK_REQUEST"
+export const SYNC_STOCK_FAILURE = "SYNC_STOCK_FAILURE"
 
 // ################# CSV Upload Actions #################
 

@@ -10,7 +10,7 @@ import LoadingSpinner from "../utils/LoadingSpinner";
 
 export default function AccountComponent() {
     const account = useSelector(state => state.account)
-    const loading = useSelector(state => state.common.loading.account)
+    const loading = useSelector(state => state.common.loading)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getAccount())
@@ -38,7 +38,7 @@ export default function AccountComponent() {
                 </Row>
             </Container>
             <hr/>
-            {loading ? <LoadingSpinner/> :
+            {loading.account || loading.products ? <LoadingSpinner/> :
                 <Table striped bordered hover variant="dark">
                     <tbody className="text-center">
                     <tr>

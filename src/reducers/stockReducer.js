@@ -1,4 +1,9 @@
-import {EDIT_ARTICLE, LOAD_ARTICLES_SUCCESS, UPDATE_ARTICLES_SUCCESS} from "../constants/action-types";
+import {
+    EDIT_ARTICLE,
+    LOAD_ARTICLES_SUCCESS,
+    SYNC_STOCK_SUCCESS,
+    UPDATE_ARTICLES_SUCCESS
+} from "../constants/action-types";
 
 /**
  * State of the Stock. Holds a list of articles with a flag for each article if it was modified in the current session.
@@ -8,14 +13,22 @@ const initialState = {
     articles: []
 };
 
-// Todo introduce changed article with modified props. Makes revert mucho more easier
-
 function stockReducer(state = initialState, action) {
+    let newArticles
     switch (action.type) {
         case LOAD_ARTICLES_SUCCESS:
-            let newArticles = []
+            newArticles = []
+            console.log(action.payload)
             action.payload.map(a => newArticles.push({modified: {}, article: a}))
             state.articles = state.articles.concat(newArticles)
+            console.log(state.articles.length)
+            return state
+        case SYNC_STOCK_SUCCESS:
+            newArticles = []
+            console.log(action)
+            action.payload.map(a => newArticles.push({modified: {}, article: a}))
+            state.articles = newArticles
+            console.log(state.articles.length)
             return state
         case EDIT_ARTICLE:
             const index = state.articles.findIndex((article) => article.article.articleId === action.payload.articleId)

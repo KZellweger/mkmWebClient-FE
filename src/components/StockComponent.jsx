@@ -56,7 +56,10 @@ export default function StockComponent() {
         const article = articles.find(a => a.article.articleId === articleId)
         const languageCode = article.article.languageCode
         const locale = locales.find(l => l.language === languageCode)
-        console.log(locale)
+        //fallback
+        if(locale === undefined){
+            locales.find(l => l.language === "en")
+        }
         return locale['productName']
     }
 

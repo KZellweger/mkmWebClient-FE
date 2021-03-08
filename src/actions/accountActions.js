@@ -55,7 +55,6 @@ export const getRequestCounter = () => {
         dispatch({type: LOAD_REQUEST_COUNTER_REQUEST})
         return axios.get(REQUEST_COUNTER)
             .then(result => {
-                console.log(result)
                 dispatch({
                     type: LOAD_REQUEST_COUNTER_SUCCESS,
                     payload: {
