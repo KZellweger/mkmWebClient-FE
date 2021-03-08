@@ -18,14 +18,11 @@ function stockReducer(state = initialState, action) {
     switch (action.type) {
         case LOAD_ARTICLES_SUCCESS:
             newArticles = []
-            console.log(action.payload)
             action.payload.map(a => newArticles.push({modified: {}, article: a}))
             state.articles = state.articles.concat(newArticles)
-            console.log(state.articles.length)
             return state
         case SYNC_STOCK_SUCCESS:
             newArticles = []
-            console.log(action)
             action.payload.map(a => newArticles.push({modified: {}, article: a}))
             state.articles = newArticles
             console.log(state.articles.length)

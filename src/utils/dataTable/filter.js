@@ -35,6 +35,12 @@ function multiPropsFilter(data, filters) {
                 return (min.length && num >= parseFloat(min)) && (!max.length || num <= parseFloat(max))
             }else if(filters[key].type === cellTypes.BOOL){
                 return filters[key].value === getNestedObject(item,key)
+            }else if(filters[key].type === cellTypes.LOCALE_TEXT){
+                const locales = getNestedObject(item,key)
+                const found = locales.map((l) => {
+                    return l[filters[key].valueProperty].includes(filters[key].value)
+                })
+                return found.includes(true)
             }
         })
     })
@@ -59,6 +65,17 @@ function FilterWidget(column, onChange) {
         const filterObject = {
             "type": cellTypes.TEXT,
             "key": field,
+            "value": event.target.value
+        }
+        onChange(filterObject)
+    }
+
+    const handleLocalizedChange = (field, valueProperty) => (event) => {
+        console.log(field)
+        const filterObject = {
+            "type": cellTypes.LOCALE_TEXT,
+            "key": field,
+            "valueProperty": valueProperty,
             "value": event.target.value
         }
         onChange(filterObject)
@@ -105,11 +122,17 @@ function FilterWidget(column, onChange) {
 
     switch (column.type) {
         case cellTypes.TEXT:
-        case cellTypes.LOCALE_TEXT:
             return (
                 <TextField
                     label={column.label}
                     onChange={handleChange(column.id)}
+                />
+            )
+        case cellTypes.LOCALE_TEXT:
+            return (
+                <TextField
+                    label={column.label}
+                    onChange={handleLocalizedChange(column.id, column.elementProperties.valueProperty)}
                 />
             )
         case cellTypes.CURRENCY:
