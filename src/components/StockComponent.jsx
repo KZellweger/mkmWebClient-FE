@@ -5,7 +5,7 @@ import {readProductsFromMkm, updateProductsDB} from "../actions/accountActions";
 import {popOverClose, popOverOpen} from "../actions/commonActions";
 import {editArticle, getArticles, synchroniseStockWithMkm, updateArticles} from "../actions/stockActions";
 import {EDIT_ARTICLE} from "../constants/action-types";
-import {CONDITIONS, getCurrencySymbol, popOverStyles, TABLE_ICONS} from "../constants/utils";
+import {CONDITIONS, getCurrencySymbol, LANGUAGE, popOverStyles, TABLE_ICONS} from "../constants/utils";
 import DataTable, {createHeaderData} from "../utils/dataTable/DataTable";
 import ErrorMessage from "../utils/ErrorMessage";
 import LoadingSpinner from "../utils/LoadingSpinner";
@@ -52,6 +52,14 @@ export default function StockComponent() {
         dispatch(popOverClose())
     };
 
+    const getLocaleText = (locales,articleId) => {
+        const article = articles.find(a => a.article.articleId === articleId)
+        const languageCode = article.article.languageCode
+        const locale = locales.find(l => l.language === languageCode)
+        console.log(locale)
+        return locale['productName']
+    }
+
     // #### Table Configuration ####
     const header = [
         createHeaderData('article.product.imageUrl', false, false, 'Image',cellTypes.IMAGE,false,false,{
@@ -60,7 +68,15 @@ export default function StockComponent() {
             'onMouseLeave':handlePopoverClose,
         }),
         createHeaderData('article.product.expansionName', false, false, 'Expansion_Name',cellTypes.TEXT,false, true,{}), //linked with localized name
-        createHeaderData('article.product.name', false, false, 'Name',cellTypes.TEXT,false,true,{}), //TODO: Selectable -> Localizations
+        createHeaderData('article.product.localizations', false, false, 'Name',cellTypes.LOCALE_TEXT,false,true,{
+            'getLocaleText':getLocaleText,
+            'keyFrom':'article.languageCode',
+            'keyProperty':'language',
+            'valueProperty':'productName'
+        }), //TODO: Selectable -> Localizations
+        createHeaderData('article.languageCode', false, false, 'Language',cellTypes.SELECTOR,true,true,{
+            'selectorOptions':LANGUAGE
+        }),
         createHeaderData('article.price', true, false, 'Price',cellTypes.CURRENCY,true,true,{
             'style':{width: 80},
             'currency':getCurrencySymbol("de-DE","Eur")

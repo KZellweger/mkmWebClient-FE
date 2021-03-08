@@ -5,6 +5,7 @@ import {DATE_TIME_FORMAT_OPTIONS} from "../../constants/utils";
 
 export const cellTypes = {
     TEXT: 'text',
+    LOCALE_TEXT: 'localeText',
     NUMBER: 'number',
     BOOL: 'bool',
     IMAGE: 'image',
@@ -47,6 +48,16 @@ export default function getTableCellChild(type, editable, rowId, columnId, cellD
                     id={rowId + ':' + columnId}
                     style={elementProperties.style}>
                     {cellData}
+                </Typography>
+            }
+        case cellTypes.LOCALE_TEXT:
+            if (editable) {
+                return <Typography>'Not Supported yet'</Typography>
+            } else {
+                return <Typography
+                    id={rowId + ':' + columnId}
+                    style={elementProperties.style}>
+                    {elementProperties.getLocaleText(cellData,rowId)}
                 </Typography>
             }
         case cellTypes.NUMBER:

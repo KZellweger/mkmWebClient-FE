@@ -52,6 +52,9 @@ function createFilterWidgets(tableHeaderData, filterCriterias, onChange) {
 }
 
 function FilterWidget(column, onChange) {
+
+    const [selector, setSelector] = React.useState()
+
     const handleChange = (field) => (event) => {
         const filterObject = {
             "type": cellTypes.TEXT,
@@ -90,8 +93,19 @@ function FilterWidget(column, onChange) {
         }
     }
 
+    const handleSelectorChange = (field) => (event) => {
+        const filterObject = {
+            "type": cellTypes.TEXT,
+            "key": field,
+            "value": event.target.value
+        }
+        setSelector(event.target.value)
+        onChange(filterObject)
+    }
+
     switch (column.type) {
         case cellTypes.TEXT:
+        case cellTypes.LOCALE_TEXT:
             return (
                 <TextField
                     label={column.label}
@@ -126,21 +140,26 @@ function FilterWidget(column, onChange) {
                     />
                 </div>
             )
-        // case cellTypes.SELECTOR:
-        //     return(
-        //     <div>
-        //         <FormLabel>{column.label}</FormLabel>
-        //         <Select
-        //         multiple
-        //         value={[]}
-        //         >
-        //         {column.elementProperties.selectorOptions.map(option => {
-        //             return <MenuItem key={option.value} value={option.value}>
-        //                 {option.label}
-        //             </MenuItem>
-        //         })}</Select>
-        //     </div>
-        //     )
+        case cellTypes.SELECTOR:
+            return(
+            <div>
+                <FormLabel>{column.label}</FormLabel>
+                <Select
+                value={selector}
+                onChange={handleSelectorChange(column.id)}
+                >
+                    <MenuItem
+                        key=''
+                        value=''>
+                        All
+                    </MenuItem>
+                {column.elementProperties.selectorOptions.map(option => {
+                    return <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                    </MenuItem>
+                })}</Select>
+            </div>
+            )
         default:
             return (
                 <FormLabel>Not Implement yet</FormLabel>
