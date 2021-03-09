@@ -10,7 +10,7 @@
  * Further Docs see {@link https://github.com/KZellweger/mkmWebClient}
  * @type {string}
  */
-export const SERVER_URL = 'http://localhost:8081'
+export const SERVER_URL = process.env.NODE_ENV === 'production' ? 'http://localhost:8081' : 'http://localhost:8081'
 /**
  * Account Information, includes {@link SERVER_URL}
  * Used for interactions with {@link https://api.cardmarket.com/ws/documentation/API_2.0:Account_Management}
