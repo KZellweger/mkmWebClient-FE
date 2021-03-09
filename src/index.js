@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import {Provider} from "react-redux"
 import {BrowserRouter} from "react-router-dom";
 import App from './App';
-import './App.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "./App.css"
 import NavigationBar from "./components/NavigationBar";
 import reportWebVitals from './reportWebVitals';
 import store from "./store";
