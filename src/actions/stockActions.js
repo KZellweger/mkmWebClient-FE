@@ -17,7 +17,9 @@ export function addArticles(type, payload) {
     payload = payload.map(a => {
         if (a !== undefined) {
             a.lastEdited = new Date(a.lastEdited[0], a.lastEdited[1], a.lastEdited[2], a.lastEdited[3], a.lastEdited[5], a.lastEdited[5]);
-            a.product.imageUrl = a.product.imageUrl.replace(".", IMAGE_PREFIX);
+            if(process.env.NODE_ENV !== "production"){
+                a.product.imageUrl = a.product.imageUrl.replace(".", IMAGE_PREFIX);
+            }
         }
         return a;
     })
